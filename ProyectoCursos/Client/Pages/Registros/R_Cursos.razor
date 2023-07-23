@@ -1,0 +1,285 @@
+﻿@page "/Cursos"
+@page "/Cursos/{CursoId:int}"
+@inject HttpClient httpClient
+@*@inject NotificationService notificationService*@
+
+<link rel="stylesheet" href="/css/RegistroStyle.css" />
+<EditForm Model="Cursos" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container " >
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Registro de Cursos.</h3>
+            </div>
+            <div class=card-body>
+
+                @*CursoID*@
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <label>Cursos Id:</label>
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="Cursos.CursoId" class="form-control" aria-describedby="BotonBuscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="BotonBuscar"><i class="oi oi-magnifying-glass" /></button>
+                    </div>
+                </div>
+
+                @*Nombre del Curso*@
+                <div class="mb-3">
+                    <label class="form-label" for="NombreCurso">Nombre del Curso:</label>
+                    <RadzenTextBox @bind-Value="Cursos.NombreCurso" class="form-control " placeholder="Coloque un nombre para el curso" />
+                    <ValidationMessage For="@(() => Cursos.NombreCurso)" />
+                </div>
+
+                @*Descripcion*@
+                <div class="mb-3">
+                    <label class="form-label" for="Descripcion">Descripcion:</label>
+                    <RadzenTextArea @bind-Value="Cursos.Descripcion" class="form-control tamano" placeholder="Describa las caractisticas del curso" />
+                    <ValidationMessage For="@(() => Cursos.Descripcion)" />
+                </div>
+
+                @*Imagen*@
+                <div class="mb-3">
+                    <label class="form-label" for="RutaImagen">RutaImagen:</label>
+                    <InputFile accept="image/png,image/jpeg" OnChange="HandleFileChange" class="form-control" placeholder="Coloque la Imagen" />
+                    <ValidationMessage For="@(() => Cursos.RutaImagen)" />
+                </div>
+
+                <div Class="input-group mb-3">
+                    @*Fecha inicio*@
+                    <div Class="form-group mb-3 margen">
+                        <label class="row-text"> Fecha Inicio </label>
+                        <div class="input-group">
+                            <input type="date" @bind-value="Cursos.FechaAlta" />
+                            <ValidationMessage For="@(() => Cursos.FechaAlta)" />
+                        </div>
+                    </div>
+
+                    @*Fecha fin*@
+                    <div Class="form-group mb-3">
+                        <label class="row-text"> Fecha Fin </label>
+                        <div class="input-group">
+                            <input type="date" @bind-value="Cursos.FechaBaja" />
+                            <ValidationMessage For="@(() => Cursos.FechaBaja)" />
+                        </div>
+                    </div>
+                </div>
+
+                @*Programa*@
+                <div class="form-group mb-3">
+                    <label class="form-label" for="Programa">Programa:</label>
+                    <RadzenTextBox @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
+                    <ValidationMessage For="@(() => Cursos.Programa)" />
+                </div>
+
+                @*Cuerpo del detalle*@
+                <div class=" card-body">
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="input-group" style="margin: 5px;">
+
+                                @*Precio de venta*@
+                                <div class="form-group mb-3 margen bordes">
+                                    <label class="form-group "> Precio de venta </label>
+                                    <div class="input-group">
+                                        <InputNumber @bind-Value="PreciosDetalle.Precios.PrecioVenta" class="form-control" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.PrecioVenta)" />
+                                    </div>
+                                </div>
+
+                                @*Fecha inicio*@
+                                <div Class="form-group mb-3 margen bordes">
+                                    <label class="form-group "> Fecha Inicio </label>
+                                    <div class="input-group">
+                                        <input type="date" @bind-value="PreciosDetalle.Precios.FechaInicio" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.FechaInicio)" />
+                                    </div>
+                                </div>
+
+                                @*Fecha fin*@
+                                <div Class="form-group mb-3">
+                                    <label class="form-group"> Fecha Inicio </label>
+                                    <div class="input-group">
+                                        <input type="date" @bind-value="PreciosDetalle.Precios.FechaFin" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.FechaFin)" />
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-success" @onclick="AgregarDetalle"> <i class="oi oi-plus" /> Agregar </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-light">
+
+                        <thead class="thead">
+                            <tr class="table">
+                                <th>Id</th>
+                                <th>Precio de Venta</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var detalle in Cursos.PreciosDetalle)
+                            {
+                                <tr>
+                                    <td>@detalle.PreciosDetalleId</td>
+                                    <td>@detalle.Precios.PrecioVenta</td>
+                                    <td>@detalle.Precios.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@detalle.Precios.FechaFin.ToString("dd/MM/yyyy")</td>
+                                    <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarDetalle(detalle.PreciosDetalleId)">Eliminar <i class="oi oi-trash" /></button>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+                
+
+            </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
+                    <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</EditForm>
+
+@code {
+
+    [Parameter]
+
+    public int CursoId { get; set; }
+
+    public Cursos Cursos { get; set; } = new Cursos();
+
+    public Precios Precios { get; set; } = new Precios();
+
+    public PreciosDetalle PreciosDetalle { get; set; } = new PreciosDetalle();
+
+    private IBrowserFile archivoSeleccionado;
+
+
+    public int detalleId = 0;
+
+
+    private void HandleFileChange(InputFileChangeEventArgs e)
+    {
+        archivoSeleccionado = e.File;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (archivoSeleccionado != null)
+        {
+            // Obtener la ruta del archivo seleccionado
+            var rutaArchivo = $"imagen/{archivoSeleccionado.Name}";
+            Cursos.RutaImagen = rutaArchivo;
+
+            // Aquí puedes hacer lo que desees con la ruta del archivo, por ejemplo, enviarla al servidor o procesarla de alguna otra manera.
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CursoId > 0)
+        {
+            this.Cursos.CursoId = CursoId;
+            await Buscar();
+
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{Cursos.CursoId}");
+        {
+            if (buscar != null)
+            {
+                this.Cursos = buscar;
+                StateHasChanged();
+            }
+            else
+            {
+                //notificationService.ShowNotification(
+                //    titulo: "Error de búsqueda",
+                //    mensaje: "Registro no encontrado",
+                //    NotificationSeverity.Error
+                //);
+            }
+        }
+    }
+
+    public async void Guardar()
+    {
+        using var error = await httpClient.PostAsJsonAsync<Cursos>("api/Cursos", Cursos);
+        if (!error.IsSuccessStatusCode)
+        {
+            //notificationService.ShowNotification(
+            //    titulo: "error",
+            //    mensaje: "El Registro no se guardo",
+            //    NotificationSeverity.Error
+            //);
+            return;
+        }
+        var exito = await error.Content.ReadFromJsonAsync<Cursos>();
+        if (exito is not null)
+        {
+            this.Cursos = exito;
+            StateHasChanged();
+            //notificationService.ShowNotification(
+            //    titulo: "Exito",
+            //    mensaje: "Registro guardado",
+            //    NotificationSeverity.Success
+            //);
+        }
+    }
+
+    public void Nuevo()
+    {
+        this.Cursos = new Cursos();
+    }
+
+    public async Task Eliminar()
+    {
+        using var eliminar = await httpClient.DeleteAsync($"api/Clientes/{Cursos.CursoId}");
+        if (!eliminar.IsSuccessStatusCode)
+        {
+            //notificationService.ShowNotification(
+            //    titulo: "Error",
+            //    mensaje: "No Pudo Eliminarse",
+            //    NotificationSeverity.Error
+            //);
+            return;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+    private void AgregarDetalle()
+    {
+        detalleId++;
+        this.PreciosDetalle.PreciosDetalleId = detalleId;
+        this.Cursos.PreciosDetalle.Add(this.PreciosDetalle);
+        this.PreciosDetalle = new PreciosDetalle();
+    }
+
+    private void EliminarDetalle(int id)
+    {
+        var detalle = this.Cursos.PreciosDetalle.FirstOrDefault(d => d.PreciosDetalleId == id);
+        if (detalle != null)
+        {
+            this.Cursos.PreciosDetalle.Remove(detalle);
+        }
+    }
+}

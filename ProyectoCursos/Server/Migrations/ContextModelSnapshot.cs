@@ -23,9 +23,6 @@ namespace ProyectoCursos.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CursosDetalle")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -40,9 +37,6 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PrecioId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Programa")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -53,11 +47,23 @@ namespace ProyectoCursos.Server.Migrations
 
                     b.HasKey("CursoId");
 
-                    b.HasIndex("CursosDetalle");
-
-                    b.HasIndex("PrecioId");
-
                     b.ToTable("Cursos");
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
+                {
+                    b.Property<int>("CursosDetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CursosDetalleId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("CursosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Precios", b =>
@@ -78,6 +84,27 @@ namespace ProyectoCursos.Server.Migrations
                     b.HasKey("PrecioId");
 
                     b.ToTable("Precios");
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+                {
+                    b.Property<int>("PreciosDetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CursoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PreciosPrecioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PreciosDetalleId");
+
+                    b.HasIndex("CursoId");
+
+                    b.HasIndex("PreciosPrecioId");
+
+                    b.ToTable("PreciosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
@@ -113,24 +140,40 @@ namespace ProyectoCursos.Server.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
                 {
                     b.HasOne("ProyectoCursos.Shared.Usuarios", null)
-                        .WithMany("ListaCursos")
-                        .HasForeignKey("CursosDetalle");
+                        .WithMany("CursosDetalle")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasOne("ProyectoCursos.Shared.Precios", "Precio")
-                        .WithMany()
-                        .HasForeignKey("PrecioId")
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+                {
+                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
+                        .WithMany("PreciosDetalle")
+                        .HasForeignKey("CursoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Precio");
+                    b.HasOne("ProyectoCursos.Shared.Precios", "Precios")
+                        .WithMany()
+                        .HasForeignKey("PreciosPrecioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Precios");
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
+                {
+                    b.Navigation("PreciosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
                 {
-                    b.Navigation("ListaCursos");
+                    b.Navigation("CursosDetalle");
                 });
 #pragma warning restore 612, 618
         }

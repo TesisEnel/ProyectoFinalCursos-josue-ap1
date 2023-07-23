@@ -16,9 +16,9 @@ namespace ProyectoCursos.Shared
         public double PrecioVenta { get; set; }
 
         [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
-        public DateTime FechaInicio { get; set; }
+        public DateTime FechaInicio { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
-        public DateTime FechaFin { get; set; }
+        public DateTime FechaFin { get; set; } = DateTime.Now;
     }
 }

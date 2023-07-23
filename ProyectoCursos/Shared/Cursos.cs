@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +24,16 @@ namespace ProyectoCursos.Shared
         public string RutaImagen { get; set; }
 
         [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
-        public DateTime FechaAlta { get; set; }
+        public DateTime FechaAlta { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "* El campo Programa es obligatorio")]
         public string Programa { get; set; }
 
         [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
-        public DateTime FechaBaja { get; set; }
+        public DateTime FechaBaja { get; set; } = DateTime.Now;
 
-        public Precios Precio { get; set; }
+        [ForeignKey(("CursoId"))]
+        public ICollection<PreciosDetalle> PreciosDetalle { get; set; } = new List<PreciosDetalle>();
 
-        
     }
 }

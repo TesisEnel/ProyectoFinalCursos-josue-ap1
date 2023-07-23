@@ -30,8 +30,8 @@ namespace ProyectoCursos.Shared
         public DateTime FechaAlta { get; set; }
         public DateTime? FechaBaja { get; set; }
 
-        [ForeignKey(("CursosDetalle"))]
-        public ICollection<Cursos> ListaCursos { get; set; } = new List<Cursos>();
+        [ForeignKey(("UsuarioId"))]
+        public ICollection<CursosDetalle> CursosDetalle { get; set; } = new List<CursosDetalle>();
 
     }
 }
