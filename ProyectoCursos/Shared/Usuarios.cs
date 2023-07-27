@@ -14,24 +14,26 @@ namespace ProyectoCursos.Shared
         [Key]
         public int UsuarioId { get; set; }
 
-        [Required(ErrorMessage = "* El campo nombre es obligatorio")]
-        public string Nombre { get; set; }
+        [Required(ErrorMessage = "* El campo Nombre Completo es obligatorio")]
+        public string? NombreCompleto { get; set; }
 
-        [Required(ErrorMessage = "* El campo apellido es obligatorio")]
-        public string Apellido { get; set; }
+        [Required(ErrorMessage = "* El campo Nombre de Usuario es obligatorio")]
+        public string? NombreUsuario { get; set; }
 
         [Required(ErrorMessage = "* El campo Email es obligatorio")]
         [EmailAddress(ErrorMessage = "* Formato de email incorrecto")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "* El campo password es obligatorio")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
-        public DateTime FechaAlta { get; set; }
-        public DateTime? FechaBaja { get; set; }
+        public string? PasswordHash { get; set; } 
+        public string? Salt { get; set; } 
+
+        public int Rol { get; set; }
 
         [ForeignKey(("UsuarioId"))]
         public ICollection<CursosDetalle> CursosDetalle { get; set; } = new List<CursosDetalle>();
-
+        
     }
 }

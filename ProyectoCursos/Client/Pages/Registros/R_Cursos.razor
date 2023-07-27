@@ -1,13 +1,16 @@
 ﻿@page "/Cursos"
 @page "/Cursos/{CursoId:int}"
 @inject HttpClient httpClient
-@*@inject NotificationService notificationService*@
+@inject NotificationService notificationService
+@using ProyectoCursos.Client.Notificaciones;
+
+
 
 <link rel="stylesheet" href="/css/RegistroStyle.css" />
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
-    <div class="container " >
+    <div class="container ">
         <div class="card shadow-lg">
             <div class="card-header">
                 <h3>Registro de Cursos.</h3>
@@ -40,7 +43,7 @@
                 @*Imagen*@
                 <div class="mb-3">
                     <label class="form-label" for="RutaImagen">RutaImagen:</label>
-                    <InputFile accept="image/png,image/jpeg" OnChange="HandleFileChange" class="form-control" placeholder="Coloque la Imagen" />
+                    <InputText @bind-Value="Cursos.RutaImagen" class="form-control" placeholder="Coloque la Imagen" />
                     <ValidationMessage For="@(() => Cursos.RutaImagen)" />
                 </div>
 
@@ -137,7 +140,7 @@
                     </table>
                 </div>
 
-                
+
 
             </div>
             <div class="card-footer d-flex justify-content-center">
@@ -165,28 +168,9 @@
 
     public PreciosDetalle PreciosDetalle { get; set; } = new PreciosDetalle();
 
-    private IBrowserFile archivoSeleccionado;
-
 
     public int detalleId = 0;
 
-
-    private void HandleFileChange(InputFileChangeEventArgs e)
-    {
-        archivoSeleccionado = e.File;
-    }
-
-    private async Task HandleSubmit()
-    {
-        if (archivoSeleccionado != null)
-        {
-            // Obtener la ruta del archivo seleccionado
-            var rutaArchivo = $"imagen/{archivoSeleccionado.Name}";
-            Cursos.RutaImagen = rutaArchivo;
-
-            // Aquí puedes hacer lo que desees con la ruta del archivo, por ejemplo, enviarla al servidor o procesarla de alguna otra manera.
-        }
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -209,11 +193,11 @@
             }
             else
             {
-                //notificationService.ShowNotification(
-                //    titulo: "Error de búsqueda",
-                //    mensaje: "Registro no encontrado",
-                //    NotificationSeverity.Error
-                //);
+                notificationService.ShowNotification(
+                    titulo: "Error de búsqueda",
+                    mensaje: "Registro no encontrado",
+                    NotificationSeverity.Error
+                );
             }
         }
     }
@@ -223,11 +207,11 @@
         using var error = await httpClient.PostAsJsonAsync<Cursos>("api/Cursos", Cursos);
         if (!error.IsSuccessStatusCode)
         {
-            //notificationService.ShowNotification(
-            //    titulo: "error",
-            //    mensaje: "El Registro no se guardo",
-            //    NotificationSeverity.Error
-            //);
+            notificationService.ShowNotification(
+                titulo: "error",
+                mensaje: "El Registro no se guardo",
+                NotificationSeverity.Error
+            );
             return;
         }
         var exito = await error.Content.ReadFromJsonAsync<Cursos>();
@@ -235,11 +219,11 @@
         {
             this.Cursos = exito;
             StateHasChanged();
-            //notificationService.ShowNotification(
-            //    titulo: "Exito",
-            //    mensaje: "Registro guardado",
-            //    NotificationSeverity.Success
-            //);
+            notificationService.ShowNotification(
+                titulo: "Exito",
+                mensaje: "Registro guardado",
+                NotificationSeverity.Success
+            );
         }
     }
 
@@ -253,11 +237,11 @@
         using var eliminar = await httpClient.DeleteAsync($"api/Clientes/{Cursos.CursoId}");
         if (!eliminar.IsSuccessStatusCode)
         {
-            //notificationService.ShowNotification(
-            //    titulo: "Error",
-            //    mensaje: "No Pudo Eliminarse",
-            //    NotificationSeverity.Error
-            //);
+            notificationService.ShowNotification(
+                titulo: "Error",
+                mensaje: "No Pudo Eliminarse",
+                NotificationSeverity.Error
+            );
             return;
         }
         else

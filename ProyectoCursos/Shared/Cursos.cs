@@ -21,7 +21,7 @@ namespace ProyectoCursos.Shared
         public string Descripcion { get; set; }
 
         [Required(ErrorMessage = "* El campo Ruta Imagen es obligatorio")]
-        public string RutaImagen { get; set; }
+        public string? RutaImagen { get; set; }
 
         [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
         public DateTime FechaAlta { get; set; } = DateTime.Now;
