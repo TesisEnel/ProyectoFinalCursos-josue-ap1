@@ -17,7 +17,6 @@ namespace ProyectoCursos.Server.Controllers
             _context = context;
         }
 
-        
         [HttpGet]
 
         public async Task<ActionResult<IEnumerable<Cursos>>> GetClientes()
@@ -31,7 +30,6 @@ namespace ProyectoCursos.Server.Controllers
 
 
 
-        
         [HttpGet("{id}")]
 
         public async Task<ActionResult<Cursos>> GetCursos(int id)
@@ -55,7 +53,7 @@ namespace ProyectoCursos.Server.Controllers
             return (_context.Cursos?.Any(c => c.CursoId == id)).GetValueOrDefault();
         }
 
-        
+
         [HttpPost]
 
         public async Task<ActionResult<Cursos>> PostCursos(Cursos Cursos)
@@ -68,7 +66,7 @@ namespace ProyectoCursos.Server.Controllers
             return Ok(Cursos);
         }
 
-        
+
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeleteCursos(int id)
@@ -86,7 +84,5 @@ namespace ProyectoCursos.Server.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-
     }
 }
-

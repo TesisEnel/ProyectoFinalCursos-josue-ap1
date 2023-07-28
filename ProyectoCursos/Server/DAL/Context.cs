@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProyectoCursos.Shared;
+using static ProyectoCursos.Shared.Cursos;
 
 namespace ProyectoCursos.Server.DAL
 {
@@ -8,13 +9,11 @@ namespace ProyectoCursos.Server.DAL
        
         public DbSet<Cursos> Cursos { get; set; }
 
-        public DbSet<Precios> Precios { get; set; }
-
         public DbSet<Usuarios> Usuarios { get; set; }
 
         public DbSet<Roles> Roles { get; set; }
 
-       
+        public DbSet<PreciosDetalle> preciosDetalles { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -40,7 +39,6 @@ namespace ProyectoCursos.Server.DAL
                 new Roles(){ RolId = 3, NombreRol = "Estudiante" },
             });
         }
-
     }
 }
  

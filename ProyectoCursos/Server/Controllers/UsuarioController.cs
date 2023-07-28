@@ -20,6 +20,66 @@ namespace ProyectoCursos.Server.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Usuarios>>> GetClientes()
+        {
+            if (_context.Usuarios == null)
+            {
+                return NotFound();
+            }
+            return await _context.Usuarios.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Usuarios>> GetCursos(int id)
+        {
+            if (_context.Usuarios == null)
+            {
+                return NotFound();
+            }
+            var Usuarios = await _context.Usuarios.FindAsync(id);
+
+            if (Usuarios == null)
+            {
+                return NotFound();
+            }
+
+            return Usuarios;
+        }
+
+        public bool UsuarioExiste(int id)
+        {
+            return (_context.Usuarios?.Any(u => u.UsuarioId == id)).GetValueOrDefault();
+        }
+        [HttpPost]
+
+        public async Task<ActionResult<Usuarios>> PostUsuario(Usuarios Usuarios)
+        {
+            if (!UsuarioExiste(Usuarios.UsuarioId))
+                _context.Usuarios.Add(Usuarios);
+            else
+                _context.Usuarios.Update(Usuarios);
+            await _context.SaveChangesAsync();
+            return Ok(Usuarios);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuario(int id)
+        {
+            if (_context.Usuarios == null)
+            {
+                return NotFound();
+            }
+            var Usuarios = await _context.Usuarios.FindAsync(id);
+            if (Usuarios == null)
+            {
+                return NotFound();
+            }
+            _context.Usuarios.Remove(Usuarios);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         // POST api/authentication/login
         [HttpPost("AuthenticateUser")]
         public ActionResult<bool> AuthenticateUser([FromBody] Usuarios loginModel)
