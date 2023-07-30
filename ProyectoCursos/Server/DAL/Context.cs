@@ -38,7 +38,7 @@ namespace ProyectoCursos.Server.DAL
                 new Roles(){ RolId = 3, NombreRol = "Estudiante" },
             });
 
+
         }
     }
 }
- 

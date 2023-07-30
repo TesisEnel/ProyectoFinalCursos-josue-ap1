@@ -21,7 +21,7 @@ namespace ProyectoCursos.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuarios>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<Usuarios>>> GetUsuarios()
         {
             if (_context.Usuarios == null)
             {
@@ -33,7 +33,7 @@ namespace ProyectoCursos.Server.Controllers
         [HttpGet("GetRoles")]
         public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
         {
-            // Aquí obtenemos la lista de roles desde la base de datos y la devolvemos en una lista.
+            
             var roles = await _context.Roles.ToListAsync();
             if (roles == null || roles.Count == 0)
             {
@@ -43,7 +43,7 @@ namespace ProyectoCursos.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuarios>> GetCursos(int id)
+        public async Task<ActionResult<Usuarios>> GetUsuarios(int id)
         {
             if (_context.Usuarios == null)
             {
@@ -65,7 +65,7 @@ namespace ProyectoCursos.Server.Controllers
         }
         [HttpPost]
 
-        public async Task<ActionResult<Usuarios>> PostUsuario(Usuarios Usuarios)
+        public async Task<ActionResult<Usuarios>> GetUsuarios(Usuarios Usuarios)
         {
             if (!UsuarioExiste(Usuarios.UsuarioId))
                 _context.Usuarios.Add(Usuarios);
