@@ -53,7 +53,16 @@
                     <ValidationMessage For="@(() => Usuarios.Password)" />
                 </div>
 
-
+               
+                <label>
+                    Primary Classification:
+                    <InputSelect @bind-Value="Usuarios.Rol">
+                        @foreach(var item in Roles)
+                        {
+                            <option value="@item.RolId">@item.NombreRol</option>
+                        }
+                    </InputSelect>
+                </label>
 
             </div>
             <div class="card-footer d-flex justify-content-center">
@@ -76,16 +85,28 @@
 
     public Usuarios Usuarios { get; set; } = new Usuarios();
 
-    public Roles Roles { get; set; } = new Roles();
+    public List<Roles> Roles { get; set; } = new List<Roles>();
 
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await BuscarRoles();
+    }
 
     protected override async Task OnInitializedAsync()
     {
         if (UsuarioId > 0)
         {
             this.Usuarios.UsuarioId = UsuarioId;
-            await Buscar();
+            await Buscar();       
         }
+        
+    }
+
+    public async Task BuscarRoles()
+    {
+        Roles = await httpClient.GetFromJsonAsync<List<Roles>>("api/Usuario/GetRoles");
+        StateHasChanged();        
     }
 
     public async Task Buscar()

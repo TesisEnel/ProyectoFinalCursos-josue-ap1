@@ -40,7 +40,7 @@ namespace ProyectoCursos.Server.Controllers
               .Where(c => c.CursoId == id)
               .Include(o => o.PreciosDetalles)
               .AsNoTracking()
-              .SingleOrDefault(); ; 
+              .SingleOrDefault();  
 
             if (Cursos == null)
             {

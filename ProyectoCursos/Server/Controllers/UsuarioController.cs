@@ -30,6 +30,16 @@ namespace ProyectoCursos.Server.Controllers
             return await _context.Usuarios.ToListAsync();
         }
 
+        [HttpGet("/GetRoles")]
+        public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
+        {
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
+            return await _context.Roles.ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuarios>> GetCursos(int id)
         {
