@@ -1,0 +1,101 @@
+﻿@page "/ConsultaCursos"
+
+@inject HttpClient httpClient
+
+<div class="card">
+    <div class="card">
+
+        <div class="card-header">
+            <h3> Consulta de Cursos </h3>
+        </div>
+
+        <div class="card-body">
+
+            <form>
+                <div class="input-group d-flex align-items-end">
+
+                    <InputSelect class="form-control col-2" @bind-Value="filtro">
+                        <option value="1">CursoId</option>
+                        <option value="2">NombreCurso</option>
+                        <option value="3">Descripcion</option>
+                        <option value="4">RutaImagen</option>
+                        <option value="5">FechaAlta</option>
+                        <option value="6">FechaBaja</option>
+                        <option value="7">Programa</option>
+                        
+                    </InputSelect>
+
+                    <div class="flex-fill mx-2">
+
+                        <div class="input-group">
+                            <label class="input-group-text"> Busqueda </label>
+                            <InputText class="form-control" @bind-Value="Criterio" />
+                        </div>
+
+                    </div>
+
+                    <button type="button" class="btn btn-sm-10 btn-primary" @onclick="Buscar"> <span class="oi oi-magnifying-glass"></span> Buscar </button>
+                </div>
+            </form>
+
+        </div>
+        @if (Cursos is not null)
+        {
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>CursoId</th>
+                        <th>Nombre Curso</th>
+                        <th>Descripcion</th>
+                        <th>Ruta Imagen</th>
+                        <th>Fecha Alta</th>
+                        <th>Fecha Baja</th>
+                        <th>Programa</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Cursos)
+                    {
+                        <tr>
+                            <td>@item.CursoId</td>
+                            <td>@item.NombreCurso</td>
+                            <td>@item.Descripcion</td>
+                            <td>@item.RutaImagen</td>
+                            <td>@item.FechaAlta</td>
+                            <td>@item.FechaBaja</td>
+                            <td>@item.Programa</td>
+                            <td><a href="Cursos/@item.CursoId">Ver</a></td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="form-row justify-content-sm-between" aria-orientation="vertical">
+            <div class="col-3">
+                <label for="CantidaRegistro" class="col-form-label"><strong>Filas</strong>&nbsp;</label>
+                <input id="CantidaRegistro" @bind-value="@conteo" disabled class="form-control" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    public List<Cursos>? Cursos { get; set; }
+    public int conteo { get; set; }
+    public string filtro { get; set; }
+    public string Criterio { get; set; }
+
+    public async Task Buscar()
+    {
+        Cursos = await httpClient.GetFromJsonAsync<List<Cursos>>($"api/Cursos");
+
+        conteo = Cursos != null ? Cursos!.Count() : 0;
+        StateHasChanged();
+    }
+}

@@ -21,7 +21,7 @@ namespace ProyectoCursos.Server.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     NombreCurso = table.Column<string>(type: "TEXT", nullable: false),
                     Descripcion = table.Column<string>(type: "TEXT", nullable: false),
-                    RutaImagen = table.Column<string>(type: "TEXT", nullable: false),
+                    RutaImagen = table.Column<byte[]>(type: "BLOB", nullable: false),
                     FechaAlta = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Programa = table.Column<string>(type: "TEXT", nullable: false),
                     FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -64,7 +64,7 @@ namespace ProyectoCursos.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "preciosDetalles",
+                name: "PreciosDetalle",
                 columns: table => new
                 {
                     PreciosDetalleId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -76,9 +76,9 @@ namespace ProyectoCursos.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_preciosDetalles", x => x.PreciosDetalleId);
+                    table.PrimaryKey("PK_PreciosDetalle", x => x.PreciosDetalleId);
                     table.ForeignKey(
-                        name: "FK_preciosDetalles_Cursos_CursoId",
+                        name: "FK_PreciosDetalle_Cursos_CursoId",
                         column: x => x.CursoId,
                         principalTable: "Cursos",
                         principalColumn: "CursoId",
@@ -117,7 +117,7 @@ namespace ProyectoCursos.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "UsuarioId", "Email", "NombreCompleto", "NombreUsuario", "Password", "PasswordHash", "Rol", "Salt" },
-                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", "91e03ebacaebf0d61b206f737d86844fc31875bcafb82d8822d7f2adc1cafd01", 1, null });
+                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", "9607260e2ac7a340b04ce03d3be07138fdf56e977ee025dfd76ecad45a179ffd", 1, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CursosDetalle_UsuarioId",
@@ -125,8 +125,8 @@ namespace ProyectoCursos.Server.Migrations
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_preciosDetalles_CursoId",
-                table: "preciosDetalles",
+                name: "IX_PreciosDetalle_CursoId",
+                table: "PreciosDetalle",
                 column: "CursoId");
         }
 
@@ -137,7 +137,7 @@ namespace ProyectoCursos.Server.Migrations
                 name: "CursosDetalle");
 
             migrationBuilder.DropTable(
-                name: "preciosDetalles");
+                name: "PreciosDetalle");
 
             migrationBuilder.DropTable(
                 name: "Roles");

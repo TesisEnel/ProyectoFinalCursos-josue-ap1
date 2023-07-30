@@ -1,19 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProyectoCursos.Shared;
-using static ProyectoCursos.Shared.Cursos;
 
 namespace ProyectoCursos.Server.DAL
 {
     public class Context : DbContext
     {
-       
+
         public DbSet<Cursos> Cursos { get; set; }
 
         public DbSet<Usuarios> Usuarios { get; set; }
 
         public DbSet<Roles> Roles { get; set; }
 
-        public DbSet<PreciosDetalle> preciosDetalles { get; set; }
+        public DbSet<PreciosDetalle> PreciosDetalle { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -22,7 +21,7 @@ namespace ProyectoCursos.Server.DAL
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Usuarios>().HasData(new List<Usuarios>()
             {
-                new Usuarios(){ 
+                new Usuarios(){
                     UsuarioId = 1,
                     NombreCompleto = "Josue Russo",
                     NombreUsuario = "Admin",
@@ -38,6 +37,7 @@ namespace ProyectoCursos.Server.DAL
                 new Roles(){ RolId = 2, NombreRol = "Profesor" },
                 new Roles(){ RolId = 3, NombreRol = "Estudiante" },
             });
+
         }
     }
 }

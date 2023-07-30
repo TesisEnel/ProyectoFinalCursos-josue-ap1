@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230728203606_Inicio")]
+    [Migration("20230729225055_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
@@ -44,16 +44,32 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RutaImagen")
+                    b.Property<byte[]>("RutaImagen")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("BLOB");
 
                     b.HasKey("CursoId");
 
                     b.ToTable("Cursos");
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.Cursos+PreciosDetalle", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
+                {
+                    b.Property<int>("CursosDetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CursosDetalleId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("CursosDetalle");
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
                 {
                     b.Property<int>("PreciosDetalleId")
                         .ValueGeneratedOnAdd()
@@ -75,23 +91,7 @@ namespace ProyectoCursos.Server.Migrations
 
                     b.HasIndex("CursoId");
 
-                    b.ToTable("preciosDetalles");
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
-                {
-                    b.Property<int>("CursosDetalleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CursosDetalleId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("CursosDetalle");
+                    b.ToTable("PreciosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Roles", b =>
@@ -168,18 +168,9 @@ namespace ProyectoCursos.Server.Migrations
                             NombreCompleto = "Josue Russo",
                             NombreUsuario = "Admin",
                             Password = "admin123",
-                            PasswordHash = "91e03ebacaebf0d61b206f737d86844fc31875bcafb82d8822d7f2adc1cafd01",
+                            PasswordHash = "9607260e2ac7a340b04ce03d3be07138fdf56e977ee025dfd76ecad45a179ffd",
                             Rol = 1
                         });
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.Cursos+PreciosDetalle", b =>
-                {
-                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
-                        .WithMany("PreciosDetalles")
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
@@ -187,6 +178,15 @@ namespace ProyectoCursos.Server.Migrations
                     b.HasOne("ProyectoCursos.Shared.Usuarios", null)
                         .WithMany("CursosDetalle")
                         .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+                {
+                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
+                        .WithMany("PreciosDetalles")
+                        .HasForeignKey("CursoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

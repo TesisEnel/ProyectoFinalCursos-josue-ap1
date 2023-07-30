@@ -15,25 +15,42 @@ namespace ProyectoCursos.Shared
         public int CursoId { get; set; }
 
         [Required(ErrorMessage = "* El campo Nombre  es obligatorio")]
-        public string NombreCurso { get; set; }
+        public string? NombreCurso { get; set; }
 
         [Required(ErrorMessage = "* El campo Descripcion  es obligatorio")]
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
 
         [Required(ErrorMessage = "* El campo Ruta Imagen es obligatorio")]
-        public string? RutaImagen { get; set; }
+        public byte[]? RutaImagen { get; set; } 
 
         [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
         public DateTime FechaAlta { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "* El campo Programa es obligatorio")]
-        public string Programa { get; set; }
+        public string? Programa { get; set; }
 
         [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
         public DateTime FechaBaja { get; set; } = DateTime.Now;
 
+
         [ForeignKey(("CursoId"))]
-        public ICollection<PreciosDetalle> PreciosDetalle { get; set; } = new List<PreciosDetalle>();
+        public ICollection <PreciosDetalle> PreciosDetalles { get; set; } = new List<PreciosDetalle>();
+    }
+
+    public class PreciosDetalle
+    {
+        [Key]
+        public int PreciosDetalleId { get; set; }
+        public int CursoId { get; set; }
+
+        [Required(ErrorMessage = "* El campo Precios  es obligatorio")]
+        public int Precio { get; set; }
+
+        [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
+        public DateTime FechaInicio { get; set; } = DateTime.Now;
+
+        [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
+        public DateTime FechaFin { get; set; } = DateTime.Now;
 
     }
 }

@@ -1,0 +1,158 @@
+﻿@page "/Usuarios"
+@page "/Usuarios/{UsuarioId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationService
+@using ProyectoCursos.Client.Notificaciones;
+
+
+<EditForm Model="Usuarios" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container ">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Registro de Usuarios.</h3>
+            </div>
+            <div class=card-body>
+
+                @*UsuarioID*@
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <label>Usuario Id:</label>
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="Usuarios.UsuarioId" class="form-control" aria-describedby="BotonBuscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="BotonBuscar"><i class="oi oi-magnifying-glass" /></button>
+                    </div>
+                </div>
+
+                @*Nombre Completo*@
+                <div class="mb-3">
+                    <label class="form-label" for="NombreCompleto">Nombre Completo:</label>
+                    <RadzenTextBox @bind-Value="Usuarios.NombreCompleto" class="form-control " placeholder="Coloque su nombre completo" />
+                    <ValidationMessage For="@(() => Usuarios.NombreCompleto)" />
+                </div>
+
+                @*Nombre de Usuario*@
+                <div class="mb-3">
+                    <label class="form-label" for="NombreUsuario">Nombre de Usuario:</label>
+                    <RadzenTextBox @bind-Value="Usuarios.NombreUsuario" class="form-control" placeholder="Coloque un nombre de usuario" />
+                    <ValidationMessage For="@(() => Usuarios.NombreUsuario)" />
+                </div>
+
+                @*Email*@
+                <div class="mb-3">
+                    <label class="form-label" for="Email">Email:</label>
+                    <RadzenTextBox @bind-Value="Usuarios.Email" class="form-control" placeholder="Coloque un Email" />
+                    <ValidationMessage For="@(() => Usuarios.Email)" />
+                </div>
+
+
+                @*Contraseña*@
+                <div class="mb-3">
+                    <label class="form-label" for="Password">Contraseña:</label>
+                    <RadzenTextBox @bind-Value="Usuarios.Password" class="form-control" placeholder="Coloque una Contraseña" />
+                    <ValidationMessage For="@(() => Usuarios.Password)" />
+                </div>
+
+
+
+            </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
+                    <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</EditForm>
+
+@code {
+    [Parameter]
+
+    public int UsuarioId { get; set; }
+
+    public Usuarios Usuarios { get; set; } = new Usuarios();
+
+    public Roles Roles { get; set; } = new Roles();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UsuarioId > 0)
+        {
+            this.Usuarios.UsuarioId = UsuarioId;
+            await Buscar();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var buscar = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{Usuarios.UsuarioId}");
+        if (buscar != null)
+        {
+            this.Usuarios = buscar;
+            StateHasChanged();
+        }
+        else
+        {
+            notificationService.ShowNotification(
+                titulo: "Error de búsqueda",
+                mensaje: "Registro no encontrado",
+                NotificationSeverity.Error
+            );
+        }
+
+    }
+
+    public async void Guardar()
+    {
+        using var error = await httpClient.PostAsJsonAsync<Usuarios>("api/Usuario", Usuarios);
+        if (!error.IsSuccessStatusCode)
+        {
+            notificationService.ShowNotification(
+                titulo: "error",
+                mensaje: "El Registro no se guardo",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        var exito = await error.Content.ReadFromJsonAsync<Usuarios>();
+        if (exito is not null)
+        {
+            Usuarios = exito;
+            StateHasChanged();
+            notificationService.ShowNotification(
+                titulo: "Exito",
+                mensaje: "Registro guardado",
+                NotificationSeverity.Success
+            );
+        }
+    }
+
+    public void Nuevo()
+    {
+        this.Usuarios = new Usuarios();
+    }
+
+    public async Task Eliminar()
+    {
+        using var eliminar = await httpClient.DeleteAsync($"api/Usuario/{Usuarios.UsuarioId}");
+        if (!eliminar.IsSuccessStatusCode)
+        {
+            notificationService.ShowNotification(
+                titulo: "Error",
+                mensaje: "No Pudo Eliminarse",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+}

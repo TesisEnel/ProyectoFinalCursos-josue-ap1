@@ -2,11 +2,8 @@
 @page "/Cursos/{CursoId:int}"
 @inject HttpClient httpClient
 @inject NotificationService notificationService
-@using ProyectoCursos.Client.Notificaciones;
 
 
-
-<link rel="stylesheet" href="/css/RegistroStyle.css" />
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
@@ -29,22 +26,26 @@
                 @*Nombre del Curso*@
                 <div class="mb-3">
                     <label class="form-label" for="NombreCurso">Nombre del Curso:</label>
-                    <RadzenTextBox @bind-Value="Cursos.NombreCurso" class="form-control " placeholder="Coloque un nombre para el curso" />
+                    <InputText @bind-Value="Cursos.NombreCurso" class="form-control " placeholder="Coloque un nombre para el curso" />
                     <ValidationMessage For="@(() => Cursos.NombreCurso)" />
                 </div>
 
                 @*Descripcion*@
                 <div class="mb-3">
                     <label class="form-label" for="Descripcion">Descripcion:</label>
-                    <RadzenTextArea @bind-Value="Cursos.Descripcion" class="form-control tamano" placeholder="Describa las caractisticas del curso" />
+                    <InputTextArea @bind-Value="Cursos.Descripcion" class="form-control " placeholder="Describa las caractisticas del curso" />
                     <ValidationMessage For="@(() => Cursos.Descripcion)" />
                 </div>
 
+
                 @*Imagen*@
                 <div class="mb-3">
-                    <label class="form-label" for="RutaImagen">RutaImagen:</label>
-                    <InputText @bind-Value="Cursos.RutaImagen" class="form-control" placeholder="Coloque la Imagen" />
-                    <ValidationMessage For="@(() => Cursos.RutaImagen)" />
+                    <label class="form-label">Agregar Imagen</label>
+                    <input type="file" OnChange="OnChange" class="form-control" />
+                    @if (Cursos.RutaImagen != null)
+                    {
+                        <img src="@Cursos.RutaImagen" alt="Imagen del Libro" />
+                    }
                 </div>
 
                 <div Class="input-group mb-3">
@@ -70,9 +71,10 @@
                 @*Programa*@
                 <div class="form-group mb-3">
                     <label class="form-label" for="Programa">Programa:</label>
-                    <RadzenTextBox @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
+                    <InputText @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
                     <ValidationMessage For="@(() => Cursos.Programa)" />
                 </div>
+
 
                 @*Cuerpo del detalle*@
                 <div class=" card-body">
@@ -84,8 +86,8 @@
                                 <div class="form-group mb-3 margen bordes">
                                     <label class="form-group "> Precio de venta </label>
                                     <div class="input-group">
-                                        <InputNumber @bind-Value="PreciosDetalle.Precios.PrecioVenta" class="form-control" />
-                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.PrecioVenta)" />
+                                        <InputNumber @bind-Value="PreciosDetalle.Precio" class="form-control" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.Precio)" />
                                     </div>
                                 </div>
 
@@ -93,17 +95,17 @@
                                 <div Class="form-group mb-3 margen bordes">
                                     <label class="form-group "> Fecha Inicio </label>
                                     <div class="input-group">
-                                        <input type="date" @bind-value="PreciosDetalle.Precios.FechaInicio" />
-                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.FechaInicio)" />
+                                        <input type="date" @bind-value="PreciosDetalle.FechaInicio" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.FechaInicio)" />
                                     </div>
                                 </div>
 
                                 @*Fecha fin*@
                                 <div Class="form-group mb-3">
-                                    <label class="form-group"> Fecha Inicio </label>
+                                    <label class="form-group"> Fecha Fin </label>
                                     <div class="input-group">
-                                        <input type="date" @bind-value="PreciosDetalle.Precios.FechaFin" />
-                                        <ValidationMessage For="@(() => PreciosDetalle.Precios.FechaFin)" />
+                                        <input type="date" @bind-value="PreciosDetalle.FechaFin" />
+                                        <ValidationMessage For="@(() => PreciosDetalle.FechaFin)" />
                                     </div>
                                 </div>
 
@@ -111,8 +113,8 @@
                             </div>
                         </div>
                     </div>
+                    <h4>Detalles del Curso:</h4>
                     <table class="table table-bordered table-light">
-
                         <thead class="thead">
                             <tr class="table">
                                 <th>Id</th>
@@ -121,25 +123,22 @@
                                 <th>Fecha Fin</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            @foreach (var detalle in Cursos.PreciosDetalle)
+                            @foreach (var detalle in Cursos.PreciosDetalles)
                             {
                                 <tr>
                                     <td>@detalle.PreciosDetalleId</td>
-                                    <td>@detalle.Precios.PrecioVenta</td>
-                                    <td>@detalle.Precios.FechaInicio.ToString("dd/MM/yyyy")</td>
-                                    <td>@detalle.Precios.FechaFin.ToString("dd/MM/yyyy")</td>
-                                    <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarDetalle(detalle.PreciosDetalleId)">Eliminar <i class="oi oi-trash" /></button>
-
+                                    <td>@detalle.Precio</td>
+                                    <td>@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarDetalle(detalle.PreciosDetalleId)">Eliminar <i class="oi oi-trash" /></button>
+                                    </td>
                                 </tr>
                             }
-
                         </tbody>
-
                     </table>
                 </div>
-
 
 
             </div>
@@ -162,14 +161,13 @@
 
     public int CursoId { get; set; }
 
-    public Cursos Cursos { get; set; } = new Cursos();
+    public int detalleId = 0;
 
-    public Precios Precios { get; set; } = new Precios();
+    
+    public Cursos Cursos { get; set; } = new Cursos();
 
     public PreciosDetalle PreciosDetalle { get; set; } = new PreciosDetalle();
 
-
-    public int detalleId = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -182,6 +180,7 @@
         }
     }
 
+   
     public async Task Buscar()
     {
         var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{Cursos.CursoId}");
@@ -204,6 +203,8 @@
 
     public async void Guardar()
     {
+
+
         using var error = await httpClient.PostAsJsonAsync<Cursos>("api/Cursos", Cursos);
         if (!error.IsSuccessStatusCode)
         {
@@ -215,26 +216,31 @@
             return;
         }
         var exito = await error.Content.ReadFromJsonAsync<Cursos>();
+
         if (exito is not null)
         {
             this.Cursos = exito;
             StateHasChanged();
+            Nuevo();
             notificationService.ShowNotification(
                 titulo: "Exito",
                 mensaje: "Registro guardado",
                 NotificationSeverity.Success
             );
+
         }
+        Nuevo();
     }
 
     public void Nuevo()
     {
+
         this.Cursos = new Cursos();
     }
 
     public async Task Eliminar()
     {
-        using var eliminar = await httpClient.DeleteAsync($"api/Clientes/{Cursos.CursoId}");
+        using var eliminar = await httpClient.DeleteAsync($"api/Cursos/{Cursos.CursoId}");
         if (!eliminar.IsSuccessStatusCode)
         {
             notificationService.ShowNotification(
@@ -246,24 +252,29 @@
         }
         else
         {
+            notificationService.ShowNotification(
+                titulo: "Eliminado",
+                mensaje: "Se ha eliminado Correctamente",
+                NotificationSeverity.Success
+            );
             Nuevo();
         }
     }
 
-    private void AgregarDetalle()
+    public async Task AgregarDetalle()
     {
-        detalleId++;
-        this.PreciosDetalle.PreciosDetalleId = detalleId;
-        this.Cursos.PreciosDetalle.Add(this.PreciosDetalle);
-        this.PreciosDetalle = new PreciosDetalle();
+        PreciosDetalle.CursoId = Cursos.CursoId;
+        Cursos.PreciosDetalles.Add(PreciosDetalle);
+        PreciosDetalle = new PreciosDetalle();
     }
 
     private void EliminarDetalle(int id)
     {
-        var detalle = this.Cursos.PreciosDetalle.FirstOrDefault(d => d.PreciosDetalleId == id);
+        var detalle = this.Cursos.PreciosDetalles.FirstOrDefault(d => d.PreciosDetalleId == id);
         if (detalle != null)
         {
-            this.Cursos.PreciosDetalle.Remove(detalle);
+            this.Cursos.PreciosDetalles.Remove(detalle);
         }
     }
 }
+

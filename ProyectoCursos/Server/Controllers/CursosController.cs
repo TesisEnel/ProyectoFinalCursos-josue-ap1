@@ -19,7 +19,7 @@ namespace ProyectoCursos.Server.Controllers
 
         [HttpGet]
 
-        public async Task<ActionResult<IEnumerable<Cursos>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<Cursos>>> GetCursos()
         {
             if (_context.Cursos == null)
             {
@@ -27,9 +27,7 @@ namespace ProyectoCursos.Server.Controllers
             }
             return await _context.Cursos.ToListAsync();
         }
-
-
-
+      
         [HttpGet("{id}")]
 
         public async Task<ActionResult<Cursos>> GetCursos(int id)
@@ -38,7 +36,11 @@ namespace ProyectoCursos.Server.Controllers
             {
                 return NotFound();
             }
-            var Cursos = await _context.Cursos.FindAsync(id);
+            var Cursos = _context.Cursos
+              .Where(c => c.CursoId == id)
+              .Include(o => o.PreciosDetalles)
+              .AsNoTracking()
+              .SingleOrDefault(); ; 
 
             if (Cursos == null)
             {
@@ -47,25 +49,29 @@ namespace ProyectoCursos.Server.Controllers
 
             return Cursos;
         }
-
+     
         public bool CursosExiste(int id)
         {
             return (_context.Cursos?.Any(c => c.CursoId == id)).GetValueOrDefault();
         }
 
-
         [HttpPost]
-
         public async Task<ActionResult<Cursos>> PostCursos(Cursos Cursos)
         {
+
             if (!CursosExiste(Cursos.CursoId))
+            {
+        
                 _context.Cursos.Add(Cursos);
-            else
+            }
+            else 
+            {
                 _context.Cursos.Update(Cursos);
+            }
             await _context.SaveChangesAsync();
             return Ok(Cursos);
+                
         }
-
 
         [HttpDelete("{id}")]
 
@@ -84,5 +90,8 @@ namespace ProyectoCursos.Server.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+       
     }
 }
+
