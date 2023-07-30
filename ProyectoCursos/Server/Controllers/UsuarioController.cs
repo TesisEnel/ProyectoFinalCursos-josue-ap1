@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Threading.Tasks;
 using ProyectoCursos.Server.DAL;
 using ProyectoCursos.Shared;
 using System.Linq;
@@ -30,14 +30,16 @@ namespace ProyectoCursos.Server.Controllers
             return await _context.Usuarios.ToListAsync();
         }
 
-        [HttpGet("/GetRoles")]
+        [HttpGet("GetRoles")]
         public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
         {
-            if (_context.Roles == null)
+            // Aquí obtenemos la lista de roles desde la base de datos y la devolvemos en una lista.
+            var roles = await _context.Roles.ToListAsync();
+            if (roles == null || roles.Count == 0)
             {
                 return NotFound();
             }
-            return await _context.Roles.ToListAsync();
+            return Ok(roles);
         }
 
         [HttpGet("{id}")]
