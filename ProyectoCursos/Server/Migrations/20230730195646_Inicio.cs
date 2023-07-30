@@ -117,7 +117,7 @@ namespace ProyectoCursos.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "UsuarioId", "Email", "NombreCompleto", "NombreUsuario", "Password", "PasswordHash", "Rol", "Salt" },
-                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", "9607260e2ac7a340b04ce03d3be07138fdf56e977ee025dfd76ecad45a179ffd", 1, null });
+                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", "928e93645cd2f1f4e4ca27f440553a69fa61e6631d6dff626c076fb9424cbca1", 1, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CursosDetalle_UsuarioId",

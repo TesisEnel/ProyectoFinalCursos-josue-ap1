@@ -165,7 +165,7 @@ namespace ProyectoCursos.Server.Migrations
                             NombreCompleto = "Josue Russo",
                             NombreUsuario = "Admin",
                             Password = "admin123",
-                            PasswordHash = "9607260e2ac7a340b04ce03d3be07138fdf56e977ee025dfd76ecad45a179ffd",
+                            PasswordHash = "928e93645cd2f1f4e4ca27f440553a69fa61e6631d6dff626c076fb9424cbca1",
                             Rol = 1
                         });
                 });
