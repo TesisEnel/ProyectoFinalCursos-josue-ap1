@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using ProyectoCursos.Server.DAL;
 using ProyectoCursos.Shared;
 using System.Linq;
-
+using System.Linq.Expressions;
+using SQLitePCL;
 
 namespace ProyectoCursos.Server.Controllers
 {
@@ -63,8 +64,8 @@ namespace ProyectoCursos.Server.Controllers
         {
             return (_context.Usuarios?.Any(u => u.UsuarioId == id)).GetValueOrDefault();
         }
-        [HttpPost]
 
+        [HttpPost]
         public async Task<ActionResult<Usuarios>> GetUsuarios(Usuarios Usuarios)
         {
             if (!UsuarioExiste(Usuarios.UsuarioId))
@@ -92,9 +93,8 @@ namespace ProyectoCursos.Server.Controllers
             return NoContent();
         }
 
-        // POST api/authentication/login
         [HttpPost("AuthenticateUser")]
-        public ActionResult<bool> AuthenticateUser([FromBody] Login loginModel)
+        public ActionResult<Usuarios> AuthenticateUser([FromBody] Login loginModel)
         {
             try
             {
@@ -110,15 +110,16 @@ namespace ProyectoCursos.Server.Controllers
                 }
                 if(user.Password == loginModel.Password)
                 {
-                    return Ok(true);
+                    return user;
                 }
                 return BadRequest();
             }
             catch (Exception ex)
             { 
-                //return StatusCode(500, $"Error: {ex.Message}");
-                return Ok(true);
+                return StatusCode(500, $"Error: {ex.Message}");
+                
             }
         }
+
     }
 }

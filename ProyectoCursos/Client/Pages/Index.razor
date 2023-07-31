@@ -1,6 +1,8 @@
 ﻿@page "/"
+@using ProyectoCursos.Client.Sesion;
 @inject HttpClient httpClient
 @inject NavigationManager navManager
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 
 <div class="catalagos">
     @foreach(var item in Cursos)

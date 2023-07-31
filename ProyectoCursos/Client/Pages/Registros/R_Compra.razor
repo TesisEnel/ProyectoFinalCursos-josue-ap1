@@ -1,6 +1,9 @@
 ﻿@page "/Compra/{CursoId:int}"
+@using ProyectoCursos.Client.Sesion;
+@using ProyectoCursos.Shared;
 @inject HttpClient httpClient
 @inject NotificationService notificationService
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 
 <div class="container ">
     <div class="card shadow-lg">
@@ -23,17 +26,17 @@
                 <label class="form-label">@Curso?.Descripcion</label>
             </div>
 
-            <div Class="input-group mb-3">
-                @*Fecha inicio*@
-                <div Class="form-group mb-3 margen">
-                    <label class="row-text"> @Curso?.FechaAlta </label>
-                </div>
 
-                @*Fecha fin*@
-                <div Class="form-group mb-3">
-                    <label class="row-text">@Curso?.FechaBaja </label>
-                </div>
+            @*Fecha inicio*@
+            <div Class="form-group mb-3 margen">
+                <label class="row-text"> @Curso?.FechaAlta.ToString("dd/MM/yyyy") </label>
             </div>
+
+            @*Fecha fin*@
+            <div Class="form-group mb-3">
+                <label class="row-text">@Curso?.FechaBaja.ToString("dd/MM/yyyy") </label>
+            </div>
+
 
             @*Programa*@
             <div class="form-group mb-3">
@@ -43,7 +46,7 @@
 
             @*Cuerpo del detalle*@
             <div class=" card-body">
-                <h4>Detalles del Curso:</h4>
+                <h4>Precio Limitado:</h4>
                 <table class="table table-bordered table-light">
                     <thead class="thead">
                         <tr class="table">
@@ -64,7 +67,7 @@
                                     <td>@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
                                     <td>@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Compra(detalle)">Comprar <i class="oi oi-cart" /></button>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Guardar()">Comprar <i class="oi oi-cart" /></button>
                                     </td>
                                 </tr>
                             }
@@ -81,24 +84,56 @@
 @code {
     [Parameter]
     public int CursoId { get; set; }
+    public int UsuarioId { get; set; }
     public Cursos? Curso { get; set; }
+    public Compras Compra { get; set; } = new Compras();
+    public Usuarios? user { get; set; }
+
+
+
 
     override protected async Task OnInitializedAsync()
     {
         //ralizar llamada para obtener los cursos
+        user = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{1}");
         var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
         if (resultado != null)
         {
             Curso = resultado;
+
         }
     }
 
-    public void Compra(PreciosDetalle c)
+    public async void Guardar()
     {
-        notificationService.ShowNotification(
-                    titulo: "Compra",
-                    mensaje: $"Compra realizada por {c.Precio}",
-                    NotificationSeverity.Success
-                );
+
+        Compra.Usuarios = user;
+        Compra.UsuarioId = user.UsuarioId;
+
+        Compra.Cursos = Curso;
+        Compra.CursoId = Curso.CursoId;
+        using var error = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
+        if (!error.IsSuccessStatusCode)
+        {
+            notificationService.ShowNotification(
+                titulo: "error",
+                mensaje: "El Registro no se guardo",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        var exito = await error.Content.ReadFromJsonAsync<Compras>();
+
+        if (exito is not null)
+        {
+            this.Compra = exito;
+            StateHasChanged();
+            notificationService.ShowNotification(
+                titulo: "Exito",
+                mensaje: "Registro guardado",
+                NotificationSeverity.Success
+            );
+        }
+
     }
 }

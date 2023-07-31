@@ -9,8 +9,7 @@ namespace ProyectoCursos.Shared
 {
     public class Login
     {
-        [Key]
-        public int loginId { get; set; }
+
         [Required(ErrorMessage = "* El campo Email es obligatorio")]
         [EmailAddress(ErrorMessage = "* Formato de email incorrecto")]
         public string? Email { get; set; }

@@ -1,7 +1,10 @@
 ﻿@page "/login"
-@using ProyectoCursos.Shared
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@using ProyectoCursos.Client.Sesion;
+@using ProyectoCursos.Shared
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
+
 
 <h3>Página de inicio de sesión</h3>
 
@@ -34,7 +37,7 @@
 }
 
 @code {
-    public Login loginModel { get; set; } = new Login();
+    public Usuarios loginModel { get; set; } = new Usuarios();
     private string errorMessage = string.Empty;
     
 
@@ -46,7 +49,7 @@
 
             if (response.IsSuccessStatusCode)
             {
-  
+                usuarioAutenticadoService.Usuario = loginModel;
                 NavigationManager.NavigateTo("/");
             }
             else

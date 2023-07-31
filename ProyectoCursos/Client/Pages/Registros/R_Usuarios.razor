@@ -3,6 +3,9 @@
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 @using ProyectoCursos.Client.Notificaciones;
+@*@using Microsoft.AspNetCore.Components.Authorization;*@
+
+
 
 
 <EditForm Model="@Usuarios" OnValidSubmit="Guardar">
@@ -112,6 +115,8 @@
             await Buscar();
         }
     }
+
+    
 
     private void TogglePasswordVisibility()
     {

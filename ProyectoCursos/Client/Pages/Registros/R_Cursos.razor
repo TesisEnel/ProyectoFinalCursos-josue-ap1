@@ -2,6 +2,8 @@
 @page "/Cursos/{CursoId:int}"
 @inject HttpClient httpClient
 @inject NotificationService notificationService
+@*@using Microsoft.AspNetCore.Components.Authorization;*@
+
 
 
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
@@ -235,7 +237,7 @@
             );
 
         }
-        Nuevo();
+       
     }
 
     public void Nuevo()
@@ -266,13 +268,6 @@
             Nuevo();
         }
     }
-
-    //public async Task AgregarDetalle()
-    //{
-    //    PreciosDetalle.CursoId = Cursos.CursoId;
-    //    Cursos.PreciosDetalles.Add(PreciosDetalle);
-    //    PreciosDetalle = new PreciosDetalle();
-    //}
 
     public void AgregarDetalle()
     {

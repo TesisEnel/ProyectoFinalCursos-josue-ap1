@@ -12,6 +12,8 @@ namespace ProyectoCursos.Server.DAL
 
         public DbSet<Roles> Roles { get; set; }
 
+        public DbSet<Compras> Compras { get; set; }
+
         public DbSet<PreciosDetalle> PreciosDetalle { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }

@@ -19,7 +19,6 @@
                         <option value="2">NombreCompleto</option>
                         <option value="3">NombreUsuario</option>
                         <option value="4">Email</option>
-                        <option value="5">Password</option>
                         <option value="6">Rol</option>
 
                     </InputSelect>
@@ -62,7 +61,7 @@
                             <td>@item.NombreUsuario</td>
                             <td>@item.Email</td>
                             <td>@item.Password</td>
-                            <td>@GetRolNombre(item.Rol)</td> <!-- Mostrar nombre del rol -->
+                            <td>@GetRolNombre(item.Rol)</td> 
                             <td><a href="Usuarios/@item.UsuarioId">Ver</a></td>
                         </tr>
                     }
@@ -88,7 +87,7 @@
     public int conteo { get; set; }
     public string? filtro { get; set; }
     public string? Criterio { get; set; }
-    public List<Roles> Roles { get; set; } = new List<Roles>();
+    public List<Roles>? Roles { get; set; } = new List<Roles>();
 
 
     protected override async Task OnInitializedAsync()
@@ -107,6 +106,7 @@
         Roles = await httpClient.GetFromJsonAsync<List<Roles>>("api/Usuario/GetRoles");
     }
 
+    
 
     public async Task Buscar()
     {
@@ -115,5 +115,6 @@
         conteo = Usuarios != null ? Usuarios!.Count() : 0;
         StateHasChanged();
     }
+
 }
 
