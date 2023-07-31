@@ -54,8 +54,6 @@ namespace ProyectoCursos.Server.Migrations
                     NombreUsuario = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    Salt = table.Column<string>(type: "TEXT", nullable: true),
                     Rol = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -94,7 +92,8 @@ namespace ProyectoCursos.Server.Migrations
                     UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
                     CursoId = table.Column<int>(type: "INTEGER", nullable: false),
                     CursosCursoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PreciosDetalleId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,6 +103,12 @@ namespace ProyectoCursos.Server.Migrations
                         column: x => x.CursosCursoId,
                         principalTable: "Cursos",
                         principalColumn: "CursoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Compras_PreciosDetalle_PreciosDetalleId",
+                        column: x => x.PreciosDetalleId,
+                        principalTable: "PreciosDetalle",
+                        principalColumn: "PreciosDetalleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Compras_Usuarios_UsuarioId",
@@ -125,13 +130,18 @@ namespace ProyectoCursos.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuarios",
-                columns: new[] { "UsuarioId", "Email", "NombreCompleto", "NombreUsuario", "Password", "PasswordHash", "Rol", "Salt" },
-                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", "73eb65b7abff69cac2d027a3d7209f5568f0ecdcedae5108c6ae5c1b16a119b6", 1, null });
+                columns: new[] { "UsuarioId", "Email", "NombreCompleto", "NombreUsuario", "Password", "Rol" },
+                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compras_CursosCursoId",
                 table: "Compras",
                 column: "CursosCursoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Compras_PreciosDetalleId",
+                table: "Compras",
+                column: "PreciosDetalleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compras_UsuarioId",
@@ -151,10 +161,10 @@ namespace ProyectoCursos.Server.Migrations
                 name: "Compras");
 
             migrationBuilder.DropTable(
-                name: "PreciosDetalle");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "PreciosDetalle");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

@@ -2,9 +2,9 @@
 @page "/Cursos/{CursoId:int}"
 @inject HttpClient httpClient
 @inject NotificationService notificationService
-@*@using Microsoft.AspNetCore.Components.Authorization;*@
-
-
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -108,7 +108,7 @@
                                         <button type="button" class="btn btn-success" @onclick="AgregarDetalle"> <i class="oi oi-plus" /> Agregar </button>
                                     </div>
                                 </div>
-                          
+
                             </div>
                         </div>
                     </div>
@@ -154,6 +154,7 @@
 
 </EditForm>
 
+
 @code {
 
     [Parameter]
@@ -162,7 +163,6 @@
 
     public int detalleId = 0;
 
-    
     public Cursos Cursos { get; set; } = new Cursos();
 
     public PreciosDetalle PreciosDetalle { get; set; } = new PreciosDetalle();
@@ -188,7 +188,7 @@
         }
     }
 
-   
+
     public async Task Buscar()
     {
         var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{Cursos.CursoId}");
@@ -237,7 +237,7 @@
             );
 
         }
-       
+
     }
 
     public void Nuevo()
@@ -246,6 +246,7 @@
         this.Cursos = new Cursos();
     }
 
+    [Authorize(Policy = "AdminPolicy")]
     public async Task Eliminar()
     {
         using var eliminar = await httpClient.DeleteAsync($"api/Cursos/{Cursos.CursoId}");

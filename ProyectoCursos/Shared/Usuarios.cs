@@ -27,9 +27,6 @@ namespace ProyectoCursos.Shared
         [Required(ErrorMessage = "* El campo password es obligatorio")]
         public string? Password { get; set; }
 
-        public string? PasswordHash { get; set; } 
-        public string? Salt { get; set; } 
-
         public int Rol { get; set; }
 
         [ForeignKey(("UsuarioId"))]

@@ -29,7 +29,6 @@ namespace ProyectoCursos.Server.DAL
                     NombreUsuario = "Admin",
                     Email = "Eladmin@gmail.com",
                     Password = "admin123",
-                    PasswordHash = PasswordHashHelper.GetHashedPassword("admin123", PasswordHashHelper.GenerateSalt()),
                     Rol = 1 },
             });
 

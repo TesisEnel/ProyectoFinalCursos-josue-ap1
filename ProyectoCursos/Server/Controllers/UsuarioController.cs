@@ -7,6 +7,7 @@ using ProyectoCursos.Shared;
 using System.Linq;
 using System.Linq.Expressions;
 using SQLitePCL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProyectoCursos.Server.Controllers
 {
@@ -34,7 +35,7 @@ namespace ProyectoCursos.Server.Controllers
         [HttpGet("GetRoles")]
         public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
         {
-            
+
             var roles = await _context.Roles.ToListAsync();
             if (roles == null || roles.Count == 0)
             {
@@ -43,6 +44,7 @@ namespace ProyectoCursos.Server.Controllers
             return Ok(roles);
         }
 
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuarios>> GetUsuarios(int id)
         {
@@ -105,21 +107,20 @@ namespace ProyectoCursos.Server.Controllers
                 var user = _context.Usuarios.FirstOrDefault(u => u.Email == loginModel.Email);
                 if (user == null)
                 {
-                    
+
                     return NotFound("User not found.");
                 }
-                if(user.Password == loginModel.Password)
+                if (user.Password == loginModel.Password)
                 {
                     return user;
                 }
                 return BadRequest();
             }
             catch (Exception ex)
-            { 
+            {
                 return StatusCode(500, $"Error: {ex.Message}");
-                
+
             }
         }
-
     }
 }

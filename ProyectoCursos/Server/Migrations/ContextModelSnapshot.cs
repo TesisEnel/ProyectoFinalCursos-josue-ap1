@@ -32,12 +32,17 @@ namespace ProyectoCursos.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PreciosDetalleId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("UsuarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("CompraId");
 
                     b.HasIndex("CursosCursoId");
+
+                    b.HasIndex("PreciosDetalleId");
 
                     b.HasIndex("UsuarioId");
 
@@ -155,14 +160,8 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("Rol")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Salt")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("UsuarioId");
 
@@ -176,7 +175,6 @@ namespace ProyectoCursos.Server.Migrations
                             NombreCompleto = "Josue Russo",
                             NombreUsuario = "Admin",
                             Password = "admin123",
-                            PasswordHash = "73eb65b7abff69cac2d027a3d7209f5568f0ecdcedae5108c6ae5c1b16a119b6",
                             Rol = 1
                         });
                 });
@@ -189,6 +187,12 @@ namespace ProyectoCursos.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ProyectoCursos.Shared.PreciosDetalle", "PreciosDetalle")
+                        .WithMany()
+                        .HasForeignKey("PreciosDetalleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ProyectoCursos.Shared.Usuarios", "Usuarios")
                         .WithMany("Compras")
                         .HasForeignKey("UsuarioId")
@@ -196,6 +200,8 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Cursos");
+
+                    b.Navigation("PreciosDetalle");
 
                     b.Navigation("Usuarios");
                 });

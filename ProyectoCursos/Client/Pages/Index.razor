@@ -1,8 +1,12 @@
-﻿@page "/"
+﻿@page "/login"
 @using ProyectoCursos.Client.Sesion;
 @inject HttpClient httpClient
 @inject NavigationManager navManager
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+
 
 <div class="catalagos">
     @foreach(var item in Cursos)

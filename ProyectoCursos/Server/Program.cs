@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using ProyectoCursos.Server.DAL;
 using Microsoft.EntityFrameworkCore;
+using TicketManagement.BusinessLogic.Interfaces;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Administrador"));
+//    options.AddPolicy("ProfesorPolicy", policy => policy.RequireRole("Profesor"));
+
+//});
 
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Context>(opt => opt.UseSqlite(ConStr));

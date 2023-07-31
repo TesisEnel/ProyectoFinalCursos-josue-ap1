@@ -1,11 +1,12 @@
 ﻿@page "/Compra/{CursoId:int}"
+@using Microsoft.AspNetCore.Authorization;
 @using ProyectoCursos.Client.Sesion;
 @using ProyectoCursos.Shared;
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 
-<div class="container ">
+<div class="container">
     <div class="card shadow-lg">
         <div class="card-header">
             @*Imagen*@
@@ -20,6 +21,8 @@
             <h3>@Curso?.NombreCurso</h3>
         </div>
         <div class=card-body>
+
+            <label class="form-label">@usuarioAutenticadoService.Usuario.NombreCompleto </label>
 
             @*Descripcion*@
             <div class="mb-3">
@@ -45,7 +48,7 @@
             </div>
 
             @*Cuerpo del detalle*@
-            <div class=" card-body">
+            <div class="card-body">
                 <h4>Precio Limitado:</h4>
                 <table class="table table-bordered table-light">
                     <thead class="thead">
@@ -54,6 +57,7 @@
                             <th>Precio de Venta</th>
                             <th>Fecha Inicio</th>
                             <th>Fecha Fin</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +71,7 @@
                                     <td>@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
                                     <td>@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
                                     <td>
-                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Guardar()">Comprar <i class="oi oi-cart" /></button>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Guardar(detalle)">Comprar <i class="oi oi-cart" /></button>
                                     </td>
                                 </tr>
                             }
@@ -77,7 +81,6 @@
             </div>
 
         </div>
-
     </div>
 </div>
 
@@ -89,51 +92,59 @@
     public Compras Compra { get; set; } = new Compras();
     public Usuarios? user { get; set; }
 
-
-
-
     override protected async Task OnInitializedAsync()
     {
-        //ralizar llamada para obtener los cursos
-        user = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{1}");
+        // Realizar llamada para obtener los cursos
+        user = usuarioAutenticadoService.Usuario;
         var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
         if (resultado != null)
         {
             Curso = resultado;
-
         }
     }
 
-    public async void Guardar()
+    public async Task Guardar(PreciosDetalle detalle)
     {
+        Console.WriteLine(usuarioAutenticadoService.Usuario);
+        if (user == null || Curso == null || detalle == null)
+        {
+            // Alguna de las variables es null, no podemos continuar
+            return;
+        }
 
-        Compra.Usuarios = user;
         Compra.UsuarioId = user.UsuarioId;
 
-        Compra.Cursos = Curso;
         Compra.CursoId = Curso.CursoId;
-        using var error = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
-        if (!error.IsSuccessStatusCode)
+
+        // Establecer el detalle del precio seleccionado en la compra
+
+        using var response = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine("Respuesta de la solicitud POST: " + responseContent);
+        if (!response.IsSuccessStatusCode)
         {
             notificationService.ShowNotification(
-                titulo: "error",
-                mensaje: "El Registro no se guardo",
+                titulo: "Error",
+                mensaje: "El registro no se guardó",
                 NotificationSeverity.Error
             );
             return;
         }
-        var exito = await error.Content.ReadFromJsonAsync<Compras>();
+
+        var exito = await response.Content.ReadFromJsonAsync<Compras>();
 
         if (exito is not null)
         {
             this.Compra = exito;
-            StateHasChanged();
             notificationService.ShowNotification(
-                titulo: "Exito",
+                titulo: "Éxito",
                 mensaje: "Registro guardado",
                 NotificationSeverity.Success
             );
         }
-
     }
+    
 }
+
+
