@@ -92,7 +92,7 @@ namespace ProyectoCursos.Server.Migrations
                     UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
                     CursoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Precio = table.Column<float>(type: "REAL", nullable: false)
+                    Precio = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -29,8 +29,8 @@ namespace ProyectoCursos.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("Precio")
-                        .HasColumnType("REAL");
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("INTEGER");

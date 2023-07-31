@@ -22,7 +22,9 @@
         </div>
         <div class=card-body>
 
-            <label class="form-label">@usuarioAutenticadoService.Usuario.NombreCompleto </label>
+            <label class="form-label">@Compra.UsuarioId </label>
+            <label class="form-label">@Compra.CursoId </label>
+            <label class="form-label">@Compra.Precio </label>
 
             @*Descripcion*@
             <div class="mb-3">
@@ -94,7 +96,7 @@
 
     override protected async Task OnInitializedAsync()
     {
-        // Realizar llamada para obtener los cursos
+        
         user = usuarioAutenticadoService.Usuario;
         var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
         if (resultado != null)
@@ -108,20 +110,18 @@
         Console.WriteLine(usuarioAutenticadoService.Usuario);
         if (user == null || Curso == null || detalle == null)
         {
-            // Alguna de las variables es null, no podemos continuar
+            
             return;
         }
 
         Compra.UsuarioId = user.UsuarioId;
-
+        Compra.Precio = detalle.Precio;
         Compra.CursoId = Curso.CursoId;
 
-        // Establecer el detalle del precio seleccionado en la compra
+        
 
         using var response = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
 
-        var responseContent = await response.Content.ReadAsStringAsync();
-        Console.WriteLine("Respuesta de la solicitud POST: " + responseContent);
         if (!response.IsSuccessStatusCode)
         {
             notificationService.ShowNotification(

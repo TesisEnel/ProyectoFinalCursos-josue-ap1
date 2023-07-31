@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230731133203_Inicio")]
+    [Migration("20230731134508_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
@@ -32,8 +32,8 @@ namespace ProyectoCursos.Server.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("Precio")
-                        .HasColumnType("REAL");
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("INTEGER");

@@ -14,7 +14,7 @@ namespace ProyectoCursos.Shared
         public int UsuarioId { get; set; }
         public int CursoId { get; set; }
         public DateTime Fecha { get; set; } = DateTime.Now;
-        public float Precio { get; set; }
+        public int Precio { get; set; }
     }
 
 }
