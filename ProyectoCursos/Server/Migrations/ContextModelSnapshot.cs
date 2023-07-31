@@ -26,23 +26,16 @@ namespace ProyectoCursos.Server.Migrations
                     b.Property<int>("CursoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CursosCursoId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PreciosDetalleId")
-                        .HasColumnType("INTEGER");
+                    b.Property<float>("Precio")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("CompraId");
-
-                    b.HasIndex("CursosCursoId");
-
-                    b.HasIndex("PreciosDetalleId");
 
                     b.HasIndex("UsuarioId");
 
@@ -181,29 +174,11 @@ namespace ProyectoCursos.Server.Migrations
 
             modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
                 {
-                    b.HasOne("ProyectoCursos.Shared.Cursos", "Cursos")
-                        .WithMany()
-                        .HasForeignKey("CursosCursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoCursos.Shared.PreciosDetalle", "PreciosDetalle")
-                        .WithMany()
-                        .HasForeignKey("PreciosDetalleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoCursos.Shared.Usuarios", "Usuarios")
+                    b.HasOne("ProyectoCursos.Shared.Usuarios", null)
                         .WithMany("Compras")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Cursos");
-
-                    b.Navigation("PreciosDetalle");
-
-                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>

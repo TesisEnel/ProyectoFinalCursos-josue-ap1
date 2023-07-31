@@ -6,7 +6,7 @@ using ProyectoCursos.Shared;
 
 namespace ProyectoCursos.Server.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ComprasController : ControllerBase

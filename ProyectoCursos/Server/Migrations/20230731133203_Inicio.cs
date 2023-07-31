@@ -91,25 +91,12 @@ namespace ProyectoCursos.Server.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
                     CursoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CursosCursoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PreciosDetalleId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Precio = table.Column<float>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Compras", x => x.CompraId);
-                    table.ForeignKey(
-                        name: "FK_Compras_Cursos_CursosCursoId",
-                        column: x => x.CursosCursoId,
-                        principalTable: "Cursos",
-                        principalColumn: "CursoId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Compras_PreciosDetalle_PreciosDetalleId",
-                        column: x => x.PreciosDetalleId,
-                        principalTable: "PreciosDetalle",
-                        principalColumn: "PreciosDetalleId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Compras_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
@@ -134,16 +121,6 @@ namespace ProyectoCursos.Server.Migrations
                 values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Compras_CursosCursoId",
-                table: "Compras",
-                column: "CursosCursoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Compras_PreciosDetalleId",
-                table: "Compras",
-                column: "PreciosDetalleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Compras_UsuarioId",
                 table: "Compras",
                 column: "UsuarioId");
@@ -161,10 +138,10 @@ namespace ProyectoCursos.Server.Migrations
                 name: "Compras");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "PreciosDetalle");
 
             migrationBuilder.DropTable(
-                name: "PreciosDetalle");
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
