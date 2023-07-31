@@ -8,6 +8,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using SQLitePCL;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace ProyectoCursos.Server.Controllers
 {
@@ -44,7 +48,6 @@ namespace ProyectoCursos.Server.Controllers
             return Ok(roles);
         }
 
-        
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuarios>> GetUsuarios(int id)
         {
@@ -122,5 +125,6 @@ namespace ProyectoCursos.Server.Controllers
 
             }
         }
+
     }
 }

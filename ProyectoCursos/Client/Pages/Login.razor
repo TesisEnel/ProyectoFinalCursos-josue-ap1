@@ -2,9 +2,11 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @using ProyectoCursos.Client.Sesion;
+@using ProyectoCursos.Server;
 @using ProyectoCursos.Shared
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
-
+@using ProyectoCursos.Client.Notificaciones;
+@inject NotificationService notificationService
 
 <h3>Página de inicio de sesión</h3>
 
@@ -26,7 +28,7 @@
     <div class="card-footer d-flex justify-content-center">
         <div class="btn-group">
             <button type="submit" @onclick="@HandleLogin" class="btn btn-primary">Iniciar Sesión</button>
-            <button type="submit" class="btn btn-primary">Registro</button>
+            <button type="submit" @onclick="@RegistroNagate" class="btn btn-primary">Registro</button>
         </div>
     </div>
 </EditForm>
@@ -39,8 +41,13 @@
 @code {
     public Usuarios loginModel { get; set; } = new Usuarios();
     private string errorMessage = string.Empty;
-    
 
+    private void RegistroNagate()
+    {
+        NavigationManager.NavigateTo("/Usuarios");
+    }
+   
+    
     private async Task HandleLogin()
     {
         try

@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using ProyectoCursos.Server.DAL;
 using Microsoft.EntityFrameworkCore;
 using TicketManagement.BusinessLogic.Interfaces;
-
+using Microsoft.AspNetCore.Components.Authorization;
+using ProyectoCursos.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Administrador"));
-//    options.AddPolicy("ProfesorPolicy", policy => policy.RequireRole("Profesor"));
 
-//});
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("ProfesorPolicy", policy => policy.RequireRole("Profesor"));
+
+
+});
 
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Context>(opt => opt.UseSqlite(ConStr));
@@ -42,6 +45,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();

@@ -22,10 +22,6 @@
         </div>
         <div class=card-body>
 
-            <label class="form-label">@Compra.UsuarioId </label>
-            <label class="form-label">@Compra.CursoId </label>
-            <label class="form-label">@Compra.Precio </label>
-
             @*Descripcion*@
             <div class="mb-3">
                 <label class="form-label">@Curso?.Descripcion</label>
@@ -118,15 +114,13 @@
         Compra.Precio = detalle.Precio;
         Compra.CursoId = Curso.CursoId;
 
-        
-
         using var response = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
 
         if (!response.IsSuccessStatusCode)
         {
             notificationService.ShowNotification(
                 titulo: "Error",
-                mensaje: "El registro no se guardó",
+                mensaje: "No se puedo comprar",
                 NotificationSeverity.Error
             );
             return;
@@ -139,7 +133,7 @@
             this.Compra = exito;
             notificationService.ShowNotification(
                 titulo: "Éxito",
-                mensaje: "Registro guardado",
+                mensaje: "Se a comprado con Exito",
                 NotificationSeverity.Success
             );
         }

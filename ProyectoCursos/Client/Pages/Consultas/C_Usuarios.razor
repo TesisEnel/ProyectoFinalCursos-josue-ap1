@@ -23,7 +23,6 @@
 
                     </InputSelect>
 
-
                     <div class="flex-fill mx-2">
 
                         <div class="input-group">
@@ -65,9 +64,7 @@
                             <td><a href="Usuarios/@item.UsuarioId">Ver</a></td>
                         </tr>
                     }
-
                 </tbody>
-
             </table>
         }
     </div>
@@ -89,7 +86,6 @@
     public string? Criterio { get; set; }
     public List<Roles>? Roles { get; set; } = new List<Roles>();
 
-
     protected override async Task OnInitializedAsync()
     {
         await BuscarRoles();
@@ -105,8 +101,6 @@
     {
         Roles = await httpClient.GetFromJsonAsync<List<Roles>>("api/Usuario/GetRoles");
     }
-
-    
 
     public async Task Buscar()
     {

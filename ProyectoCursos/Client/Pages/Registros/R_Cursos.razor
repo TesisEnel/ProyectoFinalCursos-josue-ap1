@@ -3,8 +3,12 @@
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 @using Microsoft.AspNetCore.Components.Authorization;
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+@using ProyectoCursos.Client.Sesion;
+@attribute [Authorize(Roles = "Administrador")]
+@inject NotificationService notificationService
+
 
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -150,8 +154,6 @@
             </div>
         </div>
     </div>
-
-
 </EditForm>
 
 
@@ -180,6 +182,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         if (CursoId > 0)
         {
             this.Cursos.CursoId = CursoId;
@@ -286,4 +289,3 @@
         }
     }
 }
-
