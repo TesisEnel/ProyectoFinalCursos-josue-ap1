@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230730195646_Inicio")]
+    [Migration("20230731011755_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
@@ -19,6 +19,33 @@ namespace ProyectoCursos.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
+
+            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
+                {
+                    b.Property<int>("CompraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CursoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CursosCursoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CompraId");
+
+                    b.HasIndex("CursosCursoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Compras");
+                });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
                 {
@@ -51,22 +78,6 @@ namespace ProyectoCursos.Server.Migrations
                     b.HasKey("CursoId");
 
                     b.ToTable("Cursos");
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
-                {
-                    b.Property<int>("CursosDetalleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CursosDetalleId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("CursosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
@@ -168,18 +179,28 @@ namespace ProyectoCursos.Server.Migrations
                             NombreCompleto = "Josue Russo",
                             NombreUsuario = "Admin",
                             Password = "admin123",
-                            PasswordHash = "928e93645cd2f1f4e4ca27f440553a69fa61e6631d6dff626c076fb9424cbca1",
+                            PasswordHash = "73eb65b7abff69cac2d027a3d7209f5568f0ecdcedae5108c6ae5c1b16a119b6",
                             Rol = 1
                         });
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.CursosDetalle", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
                 {
-                    b.HasOne("ProyectoCursos.Shared.Usuarios", null)
-                        .WithMany("CursosDetalle")
+                    b.HasOne("ProyectoCursos.Shared.Cursos", "Cursos")
+                        .WithMany()
+                        .HasForeignKey("CursosCursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProyectoCursos.Shared.Usuarios", "Usuarios")
+                        .WithMany("Compras")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cursos");
+
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
@@ -198,7 +219,7 @@ namespace ProyectoCursos.Server.Migrations
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
                 {
-                    b.Navigation("CursosDetalle");
+                    b.Navigation("Compras");
                 });
 #pragma warning restore 612, 618
         }

@@ -22,7 +22,8 @@
 
     <div class="card-footer d-flex justify-content-center">
         <div class="btn-group">
-            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            <button type="submit" @onclick="@HandleLogin" class="btn btn-primary">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-primary">Registro</button>
         </div>
     </div>
 </EditForm>
@@ -33,14 +34,15 @@
 }
 
 @code {
-    private Usuarios loginModel = new Usuarios();
+    public Login loginModel { get; set; } = new Login();
     private string errorMessage = string.Empty;
+    
 
     private async Task HandleLogin()
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync("api/usuario/AuthenticateUser", loginModel);
+            var response = await httpClient.PostAsJsonAsync("api/Usuario/AuthenticateUser", loginModel);
 
             if (response.IsSuccessStatusCode)
             {
