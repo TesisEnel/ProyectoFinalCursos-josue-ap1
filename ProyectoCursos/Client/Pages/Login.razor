@@ -2,7 +2,6 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @using ProyectoCursos.Client.Sesion;
-@using ProyectoCursos.Server;
 @using ProyectoCursos.Shared
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 @using ProyectoCursos.Client.Notificaciones;
@@ -58,7 +57,7 @@
             {
                 var usuarioAutenticado = await response.Content.ReadFromJsonAsync<Usuarios>();
                 usuarioAutenticadoService.Usuario = usuarioAutenticado;
-                NavigationManager.NavigateTo("/login");
+                NavigationManager.NavigateTo("/Index");
             }
             else
             {

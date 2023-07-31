@@ -27,7 +27,6 @@
                 <label class="form-label">@Curso?.Descripcion</label>
             </div>
 
-
             @*Fecha inicio*@
             <div Class="form-group mb-3 margen">
                 <label class="row-text"> @Curso?.FechaAlta.ToString("dd/MM/yyyy") </label>
@@ -37,7 +36,6 @@
             <div Class="form-group mb-3">
                 <label class="row-text">@Curso?.FechaBaja.ToString("dd/MM/yyyy") </label>
             </div>
-
 
             @*Programa*@
             <div class="form-group mb-3">
@@ -106,7 +104,11 @@
         Console.WriteLine(usuarioAutenticadoService.Usuario);
         if (user == null || Curso == null || detalle == null)
         {
-            
+            notificationService.ShowNotification(
+               titulo: "Error",
+               mensaje: "Tiene que estar logeado para comprar",
+               NotificationSeverity.Error
+           );
             return;
         }
 
