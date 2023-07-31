@@ -40,12 +40,9 @@
 
                 @*Imagen*@
                 <div class="mb-3">
-                    <label class="form-label">Agregar Imagen</label>
-                    <input type="file" OnChange="OnChange" class="form-control" />
-                    @if (Cursos.RutaImagen != null)
-                    {
-                        <img src="@Cursos.RutaImagen" alt="Imagen del Libro" />
-                    }
+                    <label class="form-label" for="Imagen">Imagen:</label>
+                    <InputFile OnChange="CargarImagen" class="form-control" accept=".png, .jpg, .jpeg" />
+                    <ValidationMessage For="@(() => Cursos.RutaImagen)" />
                 </div>
 
                 <div Class="input-group mb-3">
@@ -106,10 +103,10 @@
                                     <div class="input-group">
                                         <input type="date" @bind-value="PreciosDetalle.FechaFin" />
                                         <ValidationMessage For="@(() => PreciosDetalle.FechaFin)" />
+                                        <button type="button" class="btn btn-success" @onclick="AgregarDetalle"> <i class="oi oi-plus" /> Agregar </button>
                                     </div>
                                 </div>
-
-                                <button type="button" class="btn btn-success" @onclick="AgregarDetalle"> <i class="oi oi-plus" /> Agregar </button>
+                          
                             </div>
                         </div>
                     </div>
@@ -167,6 +164,15 @@
     public Cursos Cursos { get; set; } = new Cursos();
 
     public PreciosDetalle PreciosDetalle { get; set; } = new PreciosDetalle();
+
+    private async Task CargarImagen(InputFileChangeEventArgs e)
+    {
+        var archivo = e.File;
+        var buffer = new byte[archivo.Size];
+
+        await archivo.OpenReadStream().ReadAsync(buffer);
+        Cursos.RutaImagen = buffer;
+    }
 
 
 
@@ -261,7 +267,14 @@
         }
     }
 
-    public async Task AgregarDetalle()
+    //public async Task AgregarDetalle()
+    //{
+    //    PreciosDetalle.CursoId = Cursos.CursoId;
+    //    Cursos.PreciosDetalles.Add(PreciosDetalle);
+    //    PreciosDetalle = new PreciosDetalle();
+    //}
+
+    public void AgregarDetalle()
     {
         PreciosDetalle.CursoId = Cursos.CursoId;
         Cursos.PreciosDetalles.Add(PreciosDetalle);

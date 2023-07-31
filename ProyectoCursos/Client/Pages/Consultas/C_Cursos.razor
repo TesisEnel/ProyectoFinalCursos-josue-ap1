@@ -58,12 +58,20 @@
                     @foreach (var item in Cursos)
                     {
                         <tr>
+
                             <td>@item.CursoId</td>
                             <td>@item.NombreCurso</td>
                             <td>@item.Descripcion</td>
-                            <td>@item.RutaImagen</td>
-                            <td>@item.FechaAlta</td>
-                            <td>@item.FechaBaja</td>
+                            <td>
+                                @if (item.RutaImagen != null)
+                                {
+                                    var base64 = Convert.ToBase64String(item.RutaImagen);
+                                    var imgSrc = $"data:image/jpeg;base64,{base64}";
+                                    <img src="@imgSrc" alt="Imagen del curso" width="100" height="100" />
+                                }
+                            </td>
+                            <td>@item.FechaAlta.ToString("dd/MM/yyyy")</td>
+                            <td>@item.FechaBaja.ToString("dd/MM/yyyy")</td>
                             <td>@item.Programa</td>
                             <td><a href="Cursos/@item.CursoId">Ver</a></td>
                         </tr>

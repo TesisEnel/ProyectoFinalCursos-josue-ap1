@@ -132,11 +132,6 @@
         Roles = await httpClient.GetFromJsonAsync<List<Roles>>("api/Usuario/GetRoles");
     }
 
-    //public async Task BuscarRoles()
-    //{
-    //    Roles = await httpClient.GetFromJsonAsync<List<Roles>>($"api/Usuario/GetRoles");
-    //}
-
     public async Task Buscar()
     {
         var buscar = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{Usuarios.UsuarioId}");

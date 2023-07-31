@@ -33,7 +33,7 @@ namespace ProyectoCursos.Shared
         public int Rol { get; set; }
 
         [ForeignKey(("UsuarioId"))]
-        public ICollection<CursosDetalle> CursosDetalle { get; set; } = new List<CursosDetalle>();
-        
+        public ICollection<Compras> Compras { get; set; } = new List<Compras>();
+
     }
 }

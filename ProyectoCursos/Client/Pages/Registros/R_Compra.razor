@@ -1,0 +1,104 @@
+﻿@page "/Compra/{CursoId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationService
+
+<div class="container ">
+    <div class="card shadow-lg">
+        <div class="card-header">
+            @*Imagen*@
+            <div class="mb-3">
+                @if (Curso?.RutaImagen != null)
+                {
+                    var base64 = Convert.ToBase64String(Curso.RutaImagen);
+                    var imgSrc = $"data:image/jpeg;base64,{base64}";
+                    <img src="@imgSrc" alt="Imagen del curso" class="item-imagen" />
+                }
+            </div>
+            <h3>@Curso?.NombreCurso</h3>
+        </div>
+        <div class=card-body>
+
+            @*Descripcion*@
+            <div class="mb-3">
+                <label class="form-label">@Curso?.Descripcion</label>
+            </div>
+
+            <div Class="input-group mb-3">
+                @*Fecha inicio*@
+                <div Class="form-group mb-3 margen">
+                    <label class="row-text"> @Curso?.FechaAlta </label>
+                </div>
+
+                @*Fecha fin*@
+                <div Class="form-group mb-3">
+                    <label class="row-text">@Curso?.FechaBaja </label>
+                </div>
+            </div>
+
+            @*Programa*@
+            <div class="form-group mb-3">
+                <label class="form-label">@Curso?.Programa</label>
+
+            </div>
+
+            @*Cuerpo del detalle*@
+            <div class=" card-body">
+                <h4>Detalles del Curso:</h4>
+                <table class="table table-bordered table-light">
+                    <thead class="thead">
+                        <tr class="table">
+                            <th>Id</th>
+                            <th>Precio de Venta</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Curso?.PreciosDetalles != null)
+                        {
+                            @foreach (var detalle in Curso.PreciosDetalles)
+                            {
+                                <tr>
+                                    <td>@detalle.PreciosDetalleId</td>
+                                    <td>@detalle.Precio</td>
+                                    <td>@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
+                                    <td>@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Compra(detalle)">Comprar <i class="oi oi-cart" /></button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int CursoId { get; set; }
+    public Cursos? Curso { get; set; }
+
+    override protected async Task OnInitializedAsync()
+    {
+        //ralizar llamada para obtener los cursos
+        var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
+        if (resultado != null)
+        {
+            Curso = resultado;
+        }
+    }
+
+    public void Compra(PreciosDetalle c)
+    {
+        notificationService.ShowNotification(
+                    titulo: "Compra",
+                    mensaje: $"Compra realizada por {c.Precio}",
+                    NotificationSeverity.Success
+                );
+    }
+}
