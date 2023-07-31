@@ -9,6 +9,8 @@
 @inject NotificationService notificationService
 
 
+<PageTitle>RussoCursos</PageTitle>
+
 <EditForm Model="Cursos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
@@ -73,7 +75,7 @@
                 @*Programa*@
                 <div class="form-group mb-3">
                     <label class="form-label  oi oi-check" for="Programa">Programa:</label>
-                    <InputText @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
+                    <InputTextArea @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
                     <ValidationMessage For="@(() => Cursos.Programa)" />
                 </div>
 
@@ -238,8 +240,8 @@
         if (exito is not null)
         {
             this.Cursos = exito;
-            StateHasChanged();
             Nuevo();
+            StateHasChanged();
             notificationService.ShowNotification(
                 titulo: "Exito",
                 mensaje: "Registro guardado",
