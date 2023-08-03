@@ -65,6 +65,17 @@ namespace ProyectoCursos.Server.Controllers
             return Usuarios;
         }
 
+        [HttpGet("GetByUsername/{username}")]
+        public async Task<ActionResult<Usuarios>> GetUsuariosByUsername(string username)
+        {
+            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return user;
+        }
+
         public bool UsuarioExiste(int id)
         {
             return (_context.Usuarios?.Any(u => u.UsuarioId == id)).GetValueOrDefault();

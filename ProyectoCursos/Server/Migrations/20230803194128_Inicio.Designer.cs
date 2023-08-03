@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoCursos.Server.DAL;
@@ -12,38 +11,29 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230731201642_Inicio")]
+    [Migration("20230803194128_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.Carrito", b =>
                 {
                     b.Property<int>("CompraId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompraId"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CursoId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Precio")
-                        .HasColumnType("int");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("CompraId");
 
@@ -52,78 +42,106 @@ namespace ProyectoCursos.Server.Migrations
                     b.ToTable("Compras");
                 });
 
+            modelBuilder.Entity("ProyectoCursos.Shared.Categorias", b =>
+                {
+                    b.Property<int>("CategoriaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoriaNombre")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Nivel")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CategoriaId");
+
+                    b.ToTable("Categorias");
+                });
+
             modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
                 {
                     b.Property<int>("CursoId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CursoId"));
+                    b.Property<int>("Categoria")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("FechaAlta")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("FechaBaja")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NombreCurso")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Programa")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("RutaImagen")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("BLOB");
 
                     b.HasKey("CursoId");
 
                     b.ToTable("Cursos");
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.Niveles", b =>
                 {
-                    b.Property<int>("PreciosDetalleId")
+                    b.Property<int>("NivelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PreciosDetalleId"));
+                    b.Property<string>("Nivelnombre")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("CursoId")
-                        .HasColumnType("int");
+                    b.HasKey("NivelId");
 
-                    b.Property<DateTime>("FechaFin")
-                        .HasColumnType("datetime2");
+                    b.ToTable("Niveles");
 
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Precio")
-                        .HasColumnType("int");
-
-                    b.HasKey("PreciosDetalleId");
-
-                    b.HasIndex("CursoId");
-
-                    b.ToTable("PreciosDetalle");
+                    b.HasData(
+                        new
+                        {
+                            NivelId = 1,
+                            Nivelnombre = "Principiante"
+                        },
+                        new
+                        {
+                            NivelId = 2,
+                            Nivelnombre = "Medio"
+                        },
+                        new
+                        {
+                            NivelId = 3,
+                            Nivelnombre = "Avanzado"
+                        });
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Roles", b =>
                 {
                     b.Property<int>("RolId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RolId"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("NombreRol")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("RolId");
 
@@ -151,28 +169,26 @@ namespace ProyectoCursos.Server.Migrations
                 {
                     b.Property<int>("UsuarioId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsuarioId"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("NombreUsuario")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Rol")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("UsuarioId");
 
@@ -190,32 +206,18 @@ namespace ProyectoCursos.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.Carrito", b =>
                 {
                     b.HasOne("ProyectoCursos.Shared.Usuarios", null)
-                        .WithMany("Compras")
+                        .WithMany("Carrito")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
-                {
-                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
-                        .WithMany("PreciosDetalles")
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
-                {
-                    b.Navigation("PreciosDetalles");
-                });
-
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
                 {
-                    b.Navigation("Compras");
+                    b.Navigation("Carrito");
                 });
 #pragma warning restore 612, 618
         }

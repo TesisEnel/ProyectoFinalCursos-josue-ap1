@@ -24,7 +24,7 @@ namespace ProyectoCursos.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Compras>> PostCompras(Compras Compras)
+        public async Task<ActionResult<Carrito>> PostCompras(Carrito Compras)
         {
             if (!ComprasExiste(Compras.CompraId))
             {

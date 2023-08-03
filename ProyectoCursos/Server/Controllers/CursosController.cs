@@ -18,7 +18,6 @@ namespace ProyectoCursos.Server.Controllers
         }
 
         [HttpGet]
-
         public async Task<ActionResult<IEnumerable<Cursos>>> GetCursos()
         {
             if (_context.Cursos == null)
@@ -27,7 +26,19 @@ namespace ProyectoCursos.Server.Controllers
             }
             return await _context.Cursos.ToListAsync();
         }
-      
+
+        [HttpGet("GetCategoria")]
+        public async Task<ActionResult<IEnumerable<Categorias>>> GetCategoria()
+        {
+
+            var Categoria = await _context.Categorias.ToListAsync();
+            if (Categoria == null || Categoria.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(Categoria);
+        }
+
         [HttpGet("{id}")]
 
         public async Task<ActionResult<Cursos>> GetCursos(int id)
@@ -36,11 +47,7 @@ namespace ProyectoCursos.Server.Controllers
             {
                 return NotFound();
             }
-            var Cursos = _context.Cursos
-              .Where(c => c.CursoId == id)
-              .Include(o => o.PreciosDetalles)
-              .AsNoTracking()
-              .SingleOrDefault();  
+            var Cursos = await _context.Cursos.FindAsync(id);
 
             if (Cursos == null)
             {
@@ -49,7 +56,7 @@ namespace ProyectoCursos.Server.Controllers
 
             return Cursos;
         }
-     
+       
         public bool CursosExiste(int id)
         {
             return (_context.Cursos?.Any(c => c.CursoId == id)).GetValueOrDefault();
@@ -61,7 +68,7 @@ namespace ProyectoCursos.Server.Controllers
 
             if (!CursosExiste(Cursos.CursoId))
             {
-        
+ 
                 _context.Cursos.Add(Cursos);
             }
             else 

@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
-builder.Services.AddDbContextFactory<Context>(opt => opt.UseSqlServer(ConStr));
+builder.Services.AddDbContextFactory<Context>(opt => opt.UseSqlite(ConStr));
 
 var app = builder.Build();
 

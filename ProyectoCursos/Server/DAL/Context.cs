@@ -12,9 +12,11 @@ namespace ProyectoCursos.Server.DAL
 
         public DbSet<Roles> Roles { get; set; }
 
-        public DbSet<Compras> Compras { get; set; }
+        public DbSet<Carrito> Compras { get; set; }
 
-        public DbSet<PreciosDetalle> PreciosDetalle { get; set; }
+        public DbSet<Categorias> Categorias { get; set; }
+
+        public DbSet<Niveles> Niveles { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -37,6 +39,13 @@ namespace ProyectoCursos.Server.DAL
                 new Roles(){ RolId = 1, NombreRol = "Administrador" },
                 new Roles(){ RolId = 2, NombreRol = "Profesor" },
                 new Roles(){ RolId = 3, NombreRol = "Estudiante" },
+            });
+
+            modelBuilder.Entity<Niveles>().HasData(new List<Niveles>()
+            {
+                new Niveles(){ NivelId = 1, Nivelnombre = "Principiante" },
+                new Niveles(){ NivelId = 2, Nivelnombre = "Medio" },
+                new Niveles(){ NivelId = 3, Nivelnombre = "Avanzado" },
             });
 
 
