@@ -1,8 +1,10 @@
 ﻿@page "/Categoria"
 @page "/Categoria/{CategoriaId:int}"
 @inject HttpClient httpClient
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 @inject NotificationService notificationService
 @using ProyectoCursos.Client.Notificaciones;
+@using ProyectoCursos.Client.Sesion;
 
 <PageTitle>RussoCursos</PageTitle>
 
