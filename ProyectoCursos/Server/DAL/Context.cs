@@ -28,6 +28,7 @@ namespace ProyectoCursos.Server.DAL
                 new Usuarios(){
                     UsuarioId = 1,
                     NombreCompleto = "Josue Russo",
+                    FechaNacimiento = new DateTime(2001, 4, 6),
                     NombreUsuario = "Admin",
                     Email = "Eladmin@gmail.com",
                     Password = "admin123",

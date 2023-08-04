@@ -37,11 +37,9 @@ namespace ProyectoCursos.Server.Migrations
                     NombreCurso = table.Column<string>(type: "TEXT", nullable: false),
                     Descripcion = table.Column<string>(type: "TEXT", nullable: false),
                     RutaImagen = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    Programa = table.Column<string>(type: "TEXT", nullable: false),
                     FechaAlta = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Precio = table.Column<int>(type: "INTEGER", nullable: false),
-                    Categoria = table.Column<int>(type: "INTEGER", nullable: false)
+                    Programa = table.Column<string>(type: "TEXT", nullable: false),
+                    FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,6 +79,7 @@ namespace ProyectoCursos.Server.Migrations
                     UsuarioId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     NombreCompleto = table.Column<string>(type: "TEXT", nullable: false),
+                    FechaNacimiento = table.Column<DateTime>(type: "TEXT", nullable: false),
                     NombreUsuario = table.Column<string>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: false),
@@ -89,6 +88,28 @@ namespace ProyectoCursos.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.UsuarioId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PreciosDetalle",
+                columns: table => new
+                {
+                    PreciosDetalleId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CursoId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Precio = table.Column<int>(type: "INTEGER", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PreciosDetalle", x => x.PreciosDetalleId);
+                    table.ForeignKey(
+                        name: "FK_PreciosDetalle_Cursos_CursoId",
+                        column: x => x.CursoId,
+                        principalTable: "Cursos",
+                        principalColumn: "CursoId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,13 +155,18 @@ namespace ProyectoCursos.Server.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuarios",
-                columns: new[] { "UsuarioId", "Email", "NombreCompleto", "NombreUsuario", "Password", "Rol" },
-                values: new object[] { 1, "Eladmin@gmail.com", "Josue Russo", "Admin", "admin123", 1 });
+                columns: new[] { "UsuarioId", "Email", "FechaNacimiento", "NombreCompleto", "NombreUsuario", "Password", "Rol" },
+                values: new object[] { 1, "Eladmin@gmail.com", new DateTime(2001, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Josue Russo", "Admin", "admin123", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Compras_UsuarioId",
                 table: "Compras",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PreciosDetalle_CursoId",
+                table: "PreciosDetalle",
+                column: "CursoId");
         }
 
         /// <inheritdoc />
@@ -153,16 +179,19 @@ namespace ProyectoCursos.Server.Migrations
                 name: "Compras");
 
             migrationBuilder.DropTable(
-                name: "Cursos");
+                name: "Niveles");
 
             migrationBuilder.DropTable(
-                name: "Niveles");
+                name: "PreciosDetalle");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
+
+            migrationBuilder.DropTable(
+                name: "Cursos");
         }
     }
 }

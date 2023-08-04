@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230803194128_Inicio")]
+    [Migration("20230804143121_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
@@ -70,9 +70,6 @@ namespace ProyectoCursos.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Categoria")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -86,9 +83,6 @@ namespace ProyectoCursos.Server.Migrations
                     b.Property<string>("NombreCurso")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Programa")
                         .IsRequired()
@@ -134,6 +128,31 @@ namespace ProyectoCursos.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+                {
+                    b.Property<int>("PreciosDetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CursoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PreciosDetalleId");
+
+                    b.HasIndex("CursoId");
+
+                    b.ToTable("PreciosDetalle");
+                });
+
             modelBuilder.Entity("ProyectoCursos.Shared.Roles", b =>
                 {
                     b.Property<int>("RolId")
@@ -175,6 +194,9 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("NombreCompleto")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -199,6 +221,7 @@ namespace ProyectoCursos.Server.Migrations
                         {
                             UsuarioId = 1,
                             Email = "Eladmin@gmail.com",
+                            FechaNacimiento = new DateTime(2001, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NombreCompleto = "Josue Russo",
                             NombreUsuario = "Admin",
                             Password = "admin123",
@@ -213,6 +236,20 @@ namespace ProyectoCursos.Server.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
+                {
+                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
+                        .WithMany("PreciosDetalles")
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
+                {
+                    b.Navigation("PreciosDetalles");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>

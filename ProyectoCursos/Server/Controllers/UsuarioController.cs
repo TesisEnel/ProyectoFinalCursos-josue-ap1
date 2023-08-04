@@ -65,21 +65,11 @@ namespace ProyectoCursos.Server.Controllers
             return Usuarios;
         }
 
-        [HttpGet("GetByUsername/{username}")]
-        public async Task<ActionResult<Usuarios>> GetUsuariosByUsername(string username)
-        {
-            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == username);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return user;
-        }
-
         public bool UsuarioExiste(int id)
         {
             return (_context.Usuarios?.Any(u => u.UsuarioId == id)).GetValueOrDefault();
         }
+
 
         [HttpPost]
         public async Task<ActionResult<Usuarios>> GetUsuarios(Usuarios Usuarios)
@@ -91,6 +81,19 @@ namespace ProyectoCursos.Server.Controllers
             await _context.SaveChangesAsync();
             return Ok(Usuarios);
         }
+
+        [HttpGet("GetByUsername/{username}")]
+        public async Task<ActionResult<Usuarios>> GetUserByUsername(string username)
+        {
+            var user = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return user;
+        }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsuario(int id)
