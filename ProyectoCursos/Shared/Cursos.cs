@@ -33,7 +33,7 @@ namespace ProyectoCursos.Shared
         public DateTime FechaBaja { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "* El campo CategoriaId es obligatorio")]
-        public int Categoria { get; set; }
+        public int Categorias { get; set; }
 
        
         public int Precio { get; set; }

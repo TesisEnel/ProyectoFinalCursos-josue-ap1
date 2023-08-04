@@ -29,6 +29,26 @@ namespace ProyectoCursos.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cursos",
+                columns: table => new
+                {
+                    CursoId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    NombreCurso = table.Column<string>(type: "TEXT", nullable: false),
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
+                    RutaImagen = table.Column<byte[]>(type: "BLOB", nullable: false),
+                    FechaAlta = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Programa = table.Column<string>(type: "TEXT", nullable: false),
+                    FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Categorias = table.Column<int>(type: "INTEGER", nullable: false),
+                    Precio = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cursos", x => x.CursoId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Niveles",
                 columns: table => new
                 {
@@ -70,32 +90,6 @@ namespace ProyectoCursos.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Usuarios", x => x.UsuarioId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cursos",
-                columns: table => new
-                {
-                    CursoId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NombreCurso = table.Column<string>(type: "TEXT", nullable: false),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
-                    RutaImagen = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    FechaAlta = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Programa = table.Column<string>(type: "TEXT", nullable: false),
-                    FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CategoriaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Precio = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cursos", x => x.CursoId);
-                    table.ForeignKey(
-                        name: "FK_Cursos_Categorias_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "Categorias",
-                        principalColumn: "CategoriaId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,16 +142,14 @@ namespace ProyectoCursos.Server.Migrations
                 name: "IX_Compras_UsuarioId",
                 table: "Compras",
                 column: "UsuarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cursos_CategoriaId",
-                table: "Cursos",
-                column: "CategoriaId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Categorias");
+
             migrationBuilder.DropTable(
                 name: "Compras");
 
@@ -172,9 +164,6 @@ namespace ProyectoCursos.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
-
-            migrationBuilder.DropTable(
-                name: "Categorias");
         }
     }
 }

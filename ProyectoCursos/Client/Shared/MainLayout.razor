@@ -1,5 +1,10 @@
 ﻿@using ProyectoCursos.Client.Sesion
 @inherits LayoutComponentBase
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
+@inject IJSRuntime jsRuntime
+@inject NavigationManager NavigationManager
+
+
 
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 <RadzenDialog />
@@ -18,6 +23,7 @@
             <div class="top-row px-4">
                 <a href="CarritoCompra" class="mr-2"><i class="oi oi-cart"></i> Carrito</a>
                 <span>¡Bienvenido, @usuarioAutenticadoService.Usuario.NombreUsuario!</span>
+                <button @onclick="CerrarSesion" class="btn btn-link">Cerrar Sesión</button>
             </div>
         }
 
@@ -26,3 +32,12 @@
         </article>
     </main>
 </div>
+
+@code {
+    private async Task CerrarSesion()
+    {
+        usuarioAutenticadoService.Usuario = null;
+        await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "user");
+        NavigationManager.NavigateTo("/"); // Puedes redirigir a la página de inicio de sesión
+    }
+}

@@ -76,17 +76,18 @@
                     <ValidationMessage For="@(() => Cursos.Programa)" />
                 </div>
 
-                @* Categoria *@
-                <div class="form-group mb-3">
-                    <label for="CategoriaId">Categoría:</label>
-                    <InputSelect @bind-Value="Cursos.CategoriaId">
-                        <option value="0">Seleccione una categoría</option>
-                        @foreach (var categoria in Categorias)
-                        {
-                            <option value="@categoria.CategoriaId">@categoria.CategoriaNombre</option>
-                        }
-                    </InputSelect>
-                    <ValidationMessage For="@(() => Cursos.CategoriaId)" />
+                @*Categorias*@
+                <div class="mb-3">
+                    <label class="form-label">
+                        Categorias:
+                        <InputSelect @bind-Value="Cursos.Categorias" class="dropdown-toggle" required>
+                            <option value="0">Seleccione un nivel</option>
+                            @foreach (var Categorias in Categorias)
+                            {
+                                <option value="@Categorias.CategoriaId">@Categorias.CategoriaNombre</option>
+                            }
+                        </InputSelect>
+                    </label>
                 </div>
 
                 @*Precio*@
@@ -135,13 +136,7 @@
         Cursos.RutaImagen = buffer;
     }
 
-    private void HandleCategoriaChanged(ChangeEventArgs e)
-    {
-        if (int.TryParse(e.Value?.ToString(), out int selectedCategoriaId))
-        {
-            Cursos.CategoriaId = selectedCategoriaId;
-        }
-    }
+
     protected override async Task OnInitializedAsync()
     {
         await BuscarCategoria();
@@ -177,6 +172,11 @@
             if (buscar != null)
             {
                 this.Cursos = buscar;
+                var categoria = Categorias.FirstOrDefault(c => c.CategoriaId == Cursos.Categorias);
+                if (categoria != null)
+                {
+                    this.Cursos.Categorias = categoria.CategoriaId;
+                }
                 StateHasChanged();
             }
             else
@@ -211,7 +211,7 @@
                 if (exito is not null)
                 {
                     this.Cursos = exito;
-                    Nuevo();
+                    //Nuevo();
                     notificationService.ShowNotification(
                         titulo: "Éxito",
                         mensaje: "Registro guardado",
@@ -243,7 +243,8 @@
     public void Nuevo()
     {
         this.Cursos = new Cursos();
-       
+        this.Cursos.Categorias = 0;
+
     }
 
 

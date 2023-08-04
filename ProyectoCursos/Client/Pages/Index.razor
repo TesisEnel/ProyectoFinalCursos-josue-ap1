@@ -1,35 +1,34 @@
 ﻿@page "/Index"
-@using ProyectoCursos.Client.Sesion;
+@using ProyectoCursos.Client.Sesion
 @inject HttpClient httpClient
 @inject NavigationManager navManager
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using ProyectoCursos.Shared
+@using System.Text.Json;
 
 <PageTitle>RussoCursos</PageTitle>
 
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-3">
-        @foreach (var item in Cursos)
-        {
-            <div class="col mb-4">
-                <div class="card h-100" @onclick="@(() => Navegar(item.CursoId))">
-                    @if (item.RutaImagen != null)
-                    {
-                        var base64 = Convert.ToBase64String(item.RutaImagen);
-                        var imgSrc = $"data:image/jpeg;base64,{base64}";
-                        <img src="@imgSrc" alt="Imagen del curso" class="card-img-top" />
-                    }
-                    <div class="card-body">
-                        <h5 class="card-title">@item.NombreCurso</h5>
-                        <p class="card-text">Fecha Alta: @item.FechaAlta.ToString("dd/MM/yyyy")</p>
-                        <p class="card-text">Fecha Baja: @item.FechaBaja.ToString("dd/MM/yyyy")</p>
-                    </div>
-                </div>
+<div class="catalagos">
+    @foreach (var item in Cursos)
+    {
+        <div class="card col-3 item-card" @onclick="@(() => Navegar(item.CursoId))">
+            <div class="img-container">
+                @if (item.RutaImagen != null)
+                {
+                    var base64 = Convert.ToBase64String(item.RutaImagen);
+                    var imgSrc = $"data:image/jpeg;base64,{base64}";
+                    <img src="@imgSrc" alt="Imagen del curso" class="item-imagen" />
+                }
             </div>
-        }
-    </div>
+            <div class="card-body">
+                @item.NombreCurso
+                @item.FechaAlta.ToString("dd/MM/yyyy")
+                @item.FechaBaja.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+    }
 </div>
 
 @code {
@@ -37,8 +36,20 @@
 
     override protected async Task OnInitializedAsync()
     {
+        // Recuperar información de usuario desde localStorage
+        var userJson = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "user");
+        if (!string.IsNullOrEmpty(userJson))
+        {
+            usuarioAutenticadoService.Usuario = JsonSerializer.Deserialize<Usuarios>(userJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
+
         Cursos = await httpClient.GetFromJsonAsync<List<Cursos>>("api/Cursos");
     }
+
+    [Inject] IJSRuntime jsRuntime { get; set; }
 
     public void Navegar(int id)
     {

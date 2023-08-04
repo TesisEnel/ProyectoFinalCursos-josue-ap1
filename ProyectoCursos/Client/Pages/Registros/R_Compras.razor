@@ -45,9 +45,9 @@
             </div>
 
             @*Categoria*@
-           @* <div class="form-group mb-3">
-                <label class="form-label">@Curso?.</label>
-            </div>*@
+            <div class="form-group mb-3">
+                <label class="form-label">@Curso?.Categorias</label>
+            </div>
 
             @*Precio*@
             <div class="form-group mb-3">
@@ -70,14 +70,25 @@
 
     override protected async Task OnInitializedAsync()
     {
-
-        user = usuarioAutenticadoService.Usuario;
-        var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
-        //var categoria = await httpClient.GetFromJsonAsync<Categorias>($"api/Categorias/{resultado.Categoria}");
-        if (resultado != null)
+        try
         {
-            //Categorias = categoria;
-            Curso = resultado;
+            user = usuarioAutenticadoService.Usuario;
+            var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
+            //var categoria = await httpClient.GetFromJsonAsync<Categorias>($"api/Categorias/{resultado.Categorias}");
+            if (resultado != null)
+            {
+                // Categorias = categoria.CategoriaId;
+                Curso = resultado;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            notificationService.ShowNotification(
+                 titulo: "Error de búsqueda",
+                mensaje: "Registro no encontrado" + ex.Message,
+                NotificationSeverity.Error
+            );
         }
     }
 
@@ -97,6 +108,7 @@
         Compra.UsuarioId = user.UsuarioId;
         Compra.CursoId = Curso.CursoId;
         usuarioAutenticadoService.Usuario.Carrito.Add(Compra);
+
 
     }
 

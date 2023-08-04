@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230804165006_Inicio")]
+    [Migration("20230804170338_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />
@@ -70,7 +70,7 @@ namespace ProyectoCursos.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoriaId")
+                    b.Property<int>("Categorias")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
@@ -99,8 +99,6 @@ namespace ProyectoCursos.Server.Migrations
                         .HasColumnType("BLOB");
 
                     b.HasKey("CursoId");
-
-                    b.HasIndex("CategoriaId");
 
                     b.ToTable("Cursos");
                 });
@@ -219,17 +217,6 @@ namespace ProyectoCursos.Server.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
-                {
-                    b.HasOne("ProyectoCursos.Shared.Categorias", "Categorias")
-                        .WithMany()
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Categorias");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
