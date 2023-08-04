@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using ProyectoCursos.Client.Sesion
+@inherits LayoutComponentBase
+
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 <RadzenDialog />
 <RadzenNotification />
 <RadzenContextMenu />
@@ -10,7 +13,13 @@
     </div>
 
     <main>
-        
+        @if (usuarioAutenticadoService.Usuario != null)
+        {
+            <div class="top-row px-4">
+                <a href="CarritoCompra" class="mr-2"><i class="oi oi-cart"></i> Carrito</a>
+                <span>¡Bienvenido, @usuarioAutenticadoService.Usuario.NombreUsuario!</span>
+            </div>
+        }
 
         <article class="content px-4">
             @Body

@@ -5,40 +5,42 @@
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
+@using ProyectoCursos.Shared
 
 <PageTitle>RussoCursos</PageTitle>
 
-<div class="catalagos">
-    @foreach(var item in Cursos)
-    {
-        <div class="card col-3 item-card" @onclick="@(() => navegar(item.CursoId))">
-            <div class="img-container">
-                @if (item.RutaImagen != null)
-                {
-                    var base64 = Convert.ToBase64String(item.RutaImagen);
-                    var imgSrc = $"data:image/jpeg;base64,{base64}";
-                    <img src="@imgSrc" alt="Imagen del curso" class="item-imagen"/>
-                }
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3">
+        @foreach (var item in Cursos)
+        {
+            <div class="col mb-4">
+                <div class="card h-100" @onclick="@(() => Navegar(item.CursoId))">
+                    @if (item.RutaImagen != null)
+                    {
+                        var base64 = Convert.ToBase64String(item.RutaImagen);
+                        var imgSrc = $"data:image/jpeg;base64,{base64}";
+                        <img src="@imgSrc" alt="Imagen del curso" class="card-img-top" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@item.NombreCurso</h5>
+                        <p class="card-text">Fecha Alta: @item.FechaAlta.ToString("dd/MM/yyyy")</p>
+                        <p class="card-text">Fecha Baja: @item.FechaBaja.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                @item.NombreCurso
-                @item.FechaAlta.ToString("dd/MM/yyyy")
-                @item.FechaBaja.ToString("dd/MM/yyyy")
-            </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
-@code{
+@code {
     public List<Cursos>? Cursos { get; set; } = new List<Cursos>();
-    
+
     override protected async Task OnInitializedAsync()
     {
-        
-        Cursos = await httpClient.GetFromJsonAsync<List<Cursos>>($"api/Cursos");
+        Cursos = await httpClient.GetFromJsonAsync<List<Cursos>>("api/Cursos");
     }
 
-    public void navegar(int id)
+    public void Navegar(int id)
     {
         navManager.NavigateTo($"/Compra/{id}");
     }

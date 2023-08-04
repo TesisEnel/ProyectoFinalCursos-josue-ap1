@@ -32,25 +32,12 @@ namespace ProyectoCursos.Shared
         [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
         public DateTime FechaBaja { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage = "* El campo CategoriaId es obligatorio")]
+        public int Categoria { get; set; }
 
-        [ForeignKey(("CursoId"))]
-        public ICollection <PreciosDetalle> PreciosDetalles { get; set; } = new List<PreciosDetalle>();
-    }
-
-    public class PreciosDetalle
-    {
-        [Key]
-        public int PreciosDetalleId { get; set; }
-        public int CursoId { get; set; }
-
-        [Required(ErrorMessage = "* El campo Precios  es obligatorio")]
+       
         public int Precio { get; set; }
 
-        [Required(ErrorMessage = "* El campo Fecha Inicio es obligatorio")]
-        public DateTime FechaInicio { get; set; } = DateTime.Now;
-
-        [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
-        public DateTime FechaFin { get; set; } = DateTime.Now;
 
     }
 }

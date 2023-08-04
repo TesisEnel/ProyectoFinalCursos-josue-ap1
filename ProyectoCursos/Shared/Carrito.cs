@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ProyectoCursos.Shared
 {
-    public class Compras
+    public class Carrito
     {
         [Key]
         public int CompraId { get; set; }
         public int UsuarioId { get; set; }
         public int CursoId { get; set; }
         public DateTime Fecha { get; set; } = DateTime.Now;
-        public int Precio { get; set; }
+        
     }
 
 }

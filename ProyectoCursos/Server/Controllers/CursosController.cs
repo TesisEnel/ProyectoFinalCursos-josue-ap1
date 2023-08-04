@@ -30,7 +30,6 @@ namespace ProyectoCursos.Server.Controllers
         [HttpGet("GetCategoria")]
         public async Task<ActionResult<IEnumerable<Categorias>>> GetCategoria()
         {
-
             var Categoria = await _context.Categorias.ToListAsync();
             if (Categoria == null || Categoria.Count == 0)
             {
@@ -40,14 +39,13 @@ namespace ProyectoCursos.Server.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<ActionResult<Cursos>> GetCursos(int id)
         {
             if (_context.Cursos == null)
             {
                 return NotFound();
             }
-            var Cursos = await _context.Cursos.FindAsync(id);
+            var Cursos = await _context.Cursos.Include(c => c.Categorias).FirstOrDefaultAsync(c => c.CursoId == id);
 
             if (Cursos == null)
             {
@@ -56,7 +54,7 @@ namespace ProyectoCursos.Server.Controllers
 
             return Cursos;
         }
-       
+
         public bool CursosExiste(int id)
         {
             return (_context.Cursos?.Any(c => c.CursoId == id)).GetValueOrDefault();

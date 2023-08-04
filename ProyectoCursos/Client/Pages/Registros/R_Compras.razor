@@ -42,40 +42,17 @@
             @*Programa*@
             <div class="form-group mb-3">
                 <label class="form-label">@Curso?.Programa</label>
-
             </div>
 
-            @*Cuerpo del detalle*@
-            <div class="card-body">
-                <h4>Precio Limitado:</h4>
-                <table class="table table-bordered table-light">
-                    <thead class="thead">
-                        <tr class="table">
-                            <th>Id</th>
-                            <th>Precio de Venta</th>
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Fin</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Curso?.PreciosDetalles != null)
-                        {
-                            @foreach (var detalle in Curso.PreciosDetalles)
-                            {
-                                <tr>
-                                    <td>@detalle.PreciosDetalleId</td>
-                                    <td>@detalle.Precio</td>
-                                    <td>@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
-                                    <td>@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
-                                    <td>
-                                        <button type="button" class="btn btn-outline-primary" @onclick="() => Guardar(detalle)">Comprar <i class="oi oi-cart" /></button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+            @*Categoria*@
+           @* <div class="form-group mb-3">
+                <label class="form-label">@Curso?.</label>
+            </div>*@
+
+            @*Precio*@
+            <div class="form-group mb-3">
+                <label class="form-label">@Curso?.Precio</label>
+                <button type="button" class="btn btn-outline-primary" @onclick="() => Guardar()">Comprar <i class="oi oi-cart" /></button>
             </div>
 
         </div>
@@ -87,24 +64,27 @@
     public int CursoId { get; set; }
     public int UsuarioId { get; set; }
     public Cursos? Curso { get; set; }
-    public Compras Compra { get; set; } = new Compras();
+    public Carrito Compra { get; set; } = new Carrito();
     public Usuarios? user { get; set; }
+    public Categorias? Categorias { get; set; }
 
     override protected async Task OnInitializedAsync()
     {
-        
+
         user = usuarioAutenticadoService.Usuario;
         var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
+        //var categoria = await httpClient.GetFromJsonAsync<Categorias>($"api/Categorias/{resultado.Categoria}");
         if (resultado != null)
         {
+            //Categorias = categoria;
             Curso = resultado;
         }
     }
 
-    public async Task Guardar(PreciosDetalle detalle)
+    public async Task Guardar()
     {
-        Console.WriteLine(usuarioAutenticadoService.Usuario);
-        if (user == null || Curso == null || detalle == null)
+
+        if (user == null || Curso == null)
         {
             notificationService.ShowNotification(
                titulo: "Error",
@@ -115,34 +95,9 @@
         }
 
         Compra.UsuarioId = user.UsuarioId;
-        Compra.Precio = detalle.Precio;
         Compra.CursoId = Curso.CursoId;
+        usuarioAutenticadoService.Usuario.Carrito.Add(Compra);
 
-        using var response = await httpClient.PostAsJsonAsync<Compras>("api/Compras", Compra);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            notificationService.ShowNotification(
-                titulo: "Error",
-                mensaje: "No se puedo comprar",
-                NotificationSeverity.Error
-            );
-            return;
-        }
-
-        var exito = await response.Content.ReadFromJsonAsync<Compras>();
-
-        if (exito is not null)
-        {
-            this.Compra = exito;
-            notificationService.ShowNotification(
-                titulo: "Éxito",
-                mensaje: "Se a comprado con Exito",
-                NotificationSeverity.Success
-            );
-        }
     }
-    
+
 }
-
-

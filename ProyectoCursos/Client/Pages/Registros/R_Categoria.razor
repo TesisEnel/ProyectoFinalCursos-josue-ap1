@@ -1,0 +1,207 @@
+﻿@page "/Categoria"
+@page "/Categoria/{CategoriaId:int}"
+@inject HttpClient httpClient
+@inject NotificationService notificationService
+@using ProyectoCursos.Client.Notificaciones;
+
+<PageTitle>RussoCursos</PageTitle>
+
+
+<EditForm Model="@Categorias" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container ">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Registro de Categoria.</h3>
+            </div>
+            <div class=card-body>
+
+                @*CategoriaID*@
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <label>Categoria Id:</label>
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="Categorias.CategoriaId" class="form-control" aria-describedby="BotonBuscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="BotonBuscar"><i class="oi oi-magnifying-glass" /></button>
+                    </div>
+                </div>
+
+                @*Nombre de la Categoria*@
+                <div class="mb-3">
+                    <label class="form-label" for="CategoriaNombre">Nombre de Categor&iacute;a:</label>
+                    <RadzenTextBox @bind-Value="Categorias.CategoriaNombre" class="form-control" placeholder="Coloque un nombre de usuario" />
+                    <ValidationMessage For="@(() => Categorias.CategoriaNombre)" />
+                </div>
+
+                @*Descripcion*@
+                <div class="mb-3">
+                    <label class="form-label" for="Descripcion">Descripci&oacute;n:</label>
+                    <RadzenTextArea @bind-Value="Categorias.Descripcion" class="form-control " placeholder="Coloque Una Descripción" />
+                    <ValidationMessage For="@(() => Categorias.Descripcion)" />
+                </div>
+
+
+                @*Niveles*@
+                <div class="mb-3">
+                    <label class="form-label">
+                        Niveles:
+                        <InputSelect @bind-Value="Categorias.Nivel" class="dropdown-toggle" required>
+                            <option value="0">Seleccione un nivel</option>
+                            @foreach (var nivel in Niveles)
+                            {
+                                <option value="@nivel.NivelId">@nivel.Nivelnombre</option>
+                            }
+                        </InputSelect>
+                    </label>
+                </div>
+
+            </div>
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo <i class="oi oi-file" /></button>
+                    <button type="submit" class="btn btn-outline-success">Guardar <i class="oi oi-document" /></button>
+                    <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar <i class="oi oi-trash" /></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</EditForm>
+
+@code {
+
+    [Parameter]
+
+    public int CategoriaId { get; set; }
+
+    public Categorias Categorias { get; set; } = new Categorias();
+
+    public List<Niveles> Niveles { get; set; } = new List<Niveles>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BuscarNiveles();
+
+        if (CategoriaId > 0)
+        {
+            this.Categorias.CategoriaId = CategoriaId;
+            await Buscar();
+        }
+    }
+    
+    public async Task BuscarNiveles()
+    {
+        
+        Niveles = await httpClient.GetFromJsonAsync<List<Niveles>>("api/Categoria/GetNiveles");
+
+    }
+
+    public async Task Buscar()
+    {
+        try
+        {
+
+            var buscar = await httpClient.GetFromJsonAsync<Categorias>($"api/Categoria/{Categorias.CategoriaId}");
+            if (buscar != null)
+            {
+                this.Categorias = buscar;
+
+                
+                var nivel = Niveles.FirstOrDefault(n => n.NivelId == Categorias.Nivel);
+                if (nivel != null)
+                {
+                    this.Categorias.Nivel = nivel.NivelId;
+                }
+
+                StateHasChanged();
+            }
+            else
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error de búsqueda",
+                    mensaje: "Registro no encontrado",
+                    NotificationSeverity.Error
+                );
+            }
+
+        }
+        catch (Exception ex)
+        {
+            notificationService.ShowNotification(
+                 titulo: "Error de búsqueda",
+                mensaje: "Registro no encontrado" + ex.Message,
+                NotificationSeverity.Error
+            );
+        }
+    }
+
+    public async void Guardar()
+    {
+        try
+        {
+            using var response = await httpClient.PostAsJsonAsync<Categorias>("api/Categoria", Categorias);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var exito = await response.Content.ReadFromJsonAsync<Categorias>();
+
+                if (exito != null)
+                {
+                    Categorias = exito;
+                    notificationService.ShowNotification(
+                        titulo: "Éxito",
+                        mensaje: "Registro guardado",
+                        NotificationSeverity.Success
+                    );
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "El registro no se guardó. Detalles: " + errorContent,
+                    NotificationSeverity.Error
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Nuevo();
+            notificationService.ShowNotification(
+                titulo: "Error",
+                mensaje: "Ocurrió un error al guardar: " + ex.Message,
+                NotificationSeverity.Error
+            );
+        }
+    }
+
+
+    public void Nuevo()
+    {
+        this.Categorias = new Categorias();
+        this.Categorias.Nivel = 0;
+
+    }
+
+    public async Task Eliminar()
+    {
+        using var eliminar = await httpClient.DeleteAsync($"api/Categoria/{Categorias.CategoriaId}");
+        if (!eliminar.IsSuccessStatusCode)
+        {
+            notificationService.ShowNotification(
+                titulo: "Error",
+                mensaje: "No Pudo Eliminarse",
+                NotificationSeverity.Error
+            );
+            return;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+}

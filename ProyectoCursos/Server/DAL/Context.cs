@@ -5,17 +5,11 @@ namespace ProyectoCursos.Server.DAL
 {
     public class Context : DbContext
     {
-
         public DbSet<Cursos> Cursos { get; set; }
-
         public DbSet<Usuarios> Usuarios { get; set; }
-
         public DbSet<Roles> Roles { get; set; }
-
         public DbSet<Carrito> Compras { get; set; }
-
         public DbSet<Categorias> Categorias { get; set; }
-
         public DbSet<Niveles> Niveles { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -48,8 +42,6 @@ namespace ProyectoCursos.Server.DAL
                 new Niveles(){ NivelId = 2, Nivelnombre = "Medio" },
                 new Niveles(){ NivelId = 3, Nivelnombre = "Avanzado" },
             });
-
-
         }
     }
 }

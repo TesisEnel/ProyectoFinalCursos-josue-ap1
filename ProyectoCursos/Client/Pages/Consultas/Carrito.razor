@@ -1,4 +1,6 @@
-﻿@page "/ConsultaCursos"
+﻿@page "/CarritoCompra"
+@using ProyectoCursos.Client.Sesion;
+@inject IUsuarioAutenticadoService usuarioAutenticadoService
 
 @inject HttpClient httpClient
 
@@ -24,7 +26,7 @@
                         <option value="5">FechaAlta</option>
                         <option value="6">FechaBaja</option>
                         <option value="7">Programa</option>
-                        
+
                     </InputSelect>
 
                     <div class="flex-fill mx-2">
@@ -58,6 +60,7 @@
                 <tbody>
                     @foreach (var item in Cursos)
                     {
+
                         <tr>
 
                             <td>@item.CursoId</td>
@@ -82,6 +85,8 @@
 
             </table>
         }
+
+
     </div>
     <div class="card-footer">
         <div class="form-row justify-content-sm-between" aria-orientation="vertical">
@@ -96,15 +101,20 @@
 @code {
 
     public List<Cursos>? Cursos { get; set; }
+
     public int conteo { get; set; }
     public string filtro { get; set; }
     public string Criterio { get; set; }
 
     public async Task Buscar()
     {
-        Cursos = await httpClient.GetFromJsonAsync<List<Cursos>>($"api/Cursos");
+        @foreach (var item in usuarioAutenticadoService.Usuario.Carrito)
+        {
+            var aux = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{item.CursoId}");
+            Cursos.Add(aux);
+        }
 
-        conteo = Cursos != null ? Cursos!.Count() : 0;
+        conteo = Cursos != null ? Cursos.Count() : 0;
         StateHasChanged();
     }
 }

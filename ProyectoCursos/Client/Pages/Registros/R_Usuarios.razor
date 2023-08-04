@@ -3,7 +3,7 @@
 @inject HttpClient httpClient
 @inject NotificationService notificationService
 @using ProyectoCursos.Client.Notificaciones;
-@*@using Microsoft.AspNetCore.Components.Authorization;*@
+
 
 <PageTitle>RussoCursos</PageTitle>
 
@@ -34,10 +34,23 @@
                     <ValidationMessage For="@(() => Usuarios.NombreCompleto)" />
                 </div>
 
+                @*Fecha de Nacimiento*@
+                <div Class="form-group mb-3">
+                    <label class="row-text"> Fecha de Nacimiento: </label>
+                    <div class="input-group">
+                        <input type="date" @bind-value="Usuarios.FechaNacimiento" />
+                        <ValidationMessage For="@(() => Usuarios.FechaNacimiento)" />
+                    </div>
+                </div>
+
                 @*Nombre de Usuario*@
                 <div class="mb-3">
                     <label class="form-label" for="NombreUsuario">Nombre de Usuario:</label>
-                    <RadzenTextBox @bind-Value="Usuarios.NombreUsuario" class="form-control" placeholder="Coloque un nombre de usuario" />
+                    <RadzenTextBox @bind-Value="Usuarios.NombreUsuario" class="form-control" placeholder="Coloque un nombre de usuario" @onblur="CheckUsername" />
+                    @if (usernameExiste)
+                    {
+                        <p class="text-danger">@MessageUsernameExiste</p>
+                    }
                     <ValidationMessage For="@(() => Usuarios.NombreUsuario)" />
                 </div>
 
@@ -53,16 +66,27 @@
                     <label class="form-label" for="Password">Contraseña:</label>
                     <div class="mb-3 input-group">
                         <RadzenTextBox type="@passwordType" @bind-Value="Usuarios.Password" class="form-control" placeholder="Coloque una Contraseña" />
-                        <button type="button" @onclick="TogglePasswordVisibility" class="btn btn-primary">@toggleButtonText</button>
+                        <button type="button" @onclick="TogglePasswordVisibility" class="btn btn-primary">@BotonMostrar</button>
                     </div>
                     <ValidationMessage For="@(() => Usuarios.Password)" />
+                </div>
+
+                @*Confirmar Contraseña*@
+                <div class="mb-3">
+                    <label class="form-label" for="ConfirmPassword">Confirmar Contraseña:</label>
+                    <div class="mb-3 input-group">
+                        <RadzenTextBox type="@confirmarPasswordType" @bind-Value="confirmPassword" class="form-control" placeholder="Confirme la contraseña" />
+                        <button type="button" @onclick="ToggleConfirmPasswordVisibility" class="btn btn-primary">@BotonMostrarConfirmar</button>
+                    </div>
+                    <ValidationMessage For="@(() => confirmPassword)" />
                 </div>
 
                 @*Rol*@
                 <div class="mb-3">
                     <label class="form-label">
                         Rol:
-                        <InputSelect @bind-Value="Usuarios.Rol" class="dropdown-toggle">
+                        <InputSelect @bind-Value="Usuarios.Rol" class="dropdown-toggle" required>
+                            <option value="">Seleccione el rol</option>
                             @foreach (var item in Roles)
                             {
                                 if (item.RolId == 1)
@@ -87,6 +111,7 @@
     </div>
 
 
+
 </EditForm>
 
 @code {
@@ -100,9 +125,20 @@
 
     private string passwordType = "password";
 
-    private string toggleButtonText = "Mostrar";
+    private string confirmarPasswordType = "password";
+
+    private string BotonMostrar = "Mostrar";
+
+    private string BotonMostrarConfirmar = "Mostrar";
+
+    private bool usernameExiste = false;
+
+    private string MessageUsernameExiste = "El nombre de usuario ya está en uso.";
+
 
     bool isFirstItem = true;
+
+    private string confirmPassword = "";
 
 
     protected override async Task OnInitializedAsync()
@@ -116,66 +152,143 @@
         }
     }
 
-    
+    private async Task CheckUsername()
+    {
+        await CheckUsernameExists(Usuarios.NombreUsuario);
+    }
 
     private void TogglePasswordVisibility()
     {
         if (passwordType == "password")
         {
             passwordType = "text";
-            toggleButtonText = "Ocultar";
+            BotonMostrar = "Ocultar";
         }
         else
         {
             passwordType = "password";
-            toggleButtonText = "Mostrar";
+            BotonMostrar = "Mostrar";
+        }
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        if (confirmarPasswordType == "password")
+        {
+            confirmarPasswordType = "text";
+            BotonMostrarConfirmar = "Ocultar";
+        }
+        else
+        {
+            confirmarPasswordType = "password";
+            BotonMostrarConfirmar = "Mostrar";
         }
     }
 
     public async Task BuscarRoles()
     {
         Roles = await httpClient.GetFromJsonAsync<List<Roles>>("api/Usuario/GetRoles");
+
     }
 
     public async Task Buscar()
     {
-        var buscar = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{Usuarios.UsuarioId}");
-        if (buscar != null)
+        try
         {
-            this.Usuarios = buscar;
-            StateHasChanged();
+
+            var buscar = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/{Usuarios.UsuarioId}");
+            if (buscar != null)
+            {
+                this.Usuarios = buscar;
+
+                var roles = Roles.FirstOrDefault(n => n.RolId == Usuarios.Rol);
+                if (roles != null)
+                {
+                    this.Usuarios.Rol = roles.RolId;
+                }
+
+                StateHasChanged();
+
+            }
+            else
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error de búsqueda",
+                    mensaje: "Registro no encontrado",
+                    NotificationSeverity.Error
+                );
+            }
         }
-        else
+        catch (Exception ex)
         {
             notificationService.ShowNotification(
-                titulo: "Error de búsqueda",
-                mensaje: "Registro no encontrado",
+                 titulo: "Error de búsqueda",
+                mensaje: "Registro no encontrado" + ex.Message,
                 NotificationSeverity.Error
             );
+        }
+
+    }
+    private async Task CheckUsernameExists(string username)
+    {
+        try
+        {
+            var existingUser = await httpClient.GetFromJsonAsync<Usuarios>($"api/Usuario/GetByUsername/{username}");
+            usernameExiste = existingUser != null;
+        }
+        catch (Exception ex)
+        {
+            usernameExiste = false;
         }
     }
 
     public async void Guardar()
     {
-        using var error = await httpClient.PostAsJsonAsync<Usuarios>("api/Usuario", Usuarios);
-        if (!error.IsSuccessStatusCode)
+        if (Usuarios.Password != confirmPassword)
         {
             notificationService.ShowNotification(
-                titulo: "error",
-                mensaje: "El Registro no se guardo",
+                titulo: "Error",
+                mensaje: "La contraseña y la confirmación de contraseña no coinciden",
                 NotificationSeverity.Error
             );
             return;
         }
-        var exito = await error.Content.ReadFromJsonAsync<Usuarios>();
-        if (exito is not null)
+
+        await CheckUsernameExists(Usuarios.NombreUsuario);
+
+        if (usernameExiste)
         {
-            Usuarios = exito;
-            StateHasChanged();
+            Usuarios.NombreUsuarioError = "Este nombre de usuario ya está en uso.";
+            return;
+        }
+        else
+        {
+            Usuarios.NombreUsuarioError = null;
+        }
+
+        try
+        {
+            using var response = await httpClient.PostAsJsonAsync<Usuarios>("api/Usuario", Usuarios);
+            response.EnsureSuccessStatusCode();
+
+            var exito = await response.Content.ReadFromJsonAsync<Usuarios>();
+            if (exito is not null)
+            {
+                Usuarios = exito;
+                StateHasChanged();
+                notificationService.ShowNotification(
+                    titulo: "Exito",
+                    mensaje: "Registro guardado",
+                    NotificationSeverity.Success
+                );
+            }
+        }
+        catch (HttpRequestException ex)
+        {
             notificationService.ShowNotification(
-                titulo: "Exito",
-                mensaje: "Registro guardado",
-                NotificationSeverity.Success
+                titulo: "Error",
+                mensaje: "Error al guardar el registro: " + ex.Message,
+                NotificationSeverity.Error
             );
         }
     }
@@ -183,6 +296,7 @@
     public void Nuevo()
     {
         this.Usuarios = new Usuarios();
+
     }
 
     public async Task Eliminar()

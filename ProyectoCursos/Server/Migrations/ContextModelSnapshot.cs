@@ -67,6 +67,9 @@ namespace ProyectoCursos.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -81,6 +84,9 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Precio")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Programa")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -90,6 +96,8 @@ namespace ProyectoCursos.Server.Migrations
                         .HasColumnType("BLOB");
 
                     b.HasKey("CursoId");
+
+                    b.HasIndex("CategoriaId");
 
                     b.ToTable("Cursos");
                 });
@@ -123,31 +131,6 @@ namespace ProyectoCursos.Server.Migrations
                             NivelId = 3,
                             Nivelnombre = "Avanzado"
                         });
-                });
-
-            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
-                {
-                    b.Property<int>("PreciosDetalleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CursoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("FechaFin")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("PreciosDetalleId");
-
-                    b.HasIndex("CursoId");
-
-                    b.ToTable("PreciosDetalle");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Roles", b =>
@@ -235,18 +218,15 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.PreciosDetalle", b =>
-                {
-                    b.HasOne("ProyectoCursos.Shared.Cursos", null)
-                        .WithMany("PreciosDetalles")
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
                 {
-                    b.Navigation("PreciosDetalles");
+                    b.HasOne("ProyectoCursos.Shared.Categorias", "Categorias")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categorias");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
