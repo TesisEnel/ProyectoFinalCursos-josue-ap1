@@ -36,6 +36,50 @@ namespace ProyectoCursos.Server.Controllers
             return await _context.Usuarios.ToListAsync();
         }
 
+        [HttpGet("FilterUsuarios")]
+        public async Task<ActionResult<IEnumerable<Usuarios>>> FilterUsuarios(string filtro, string criterio, DateTime? fechaNacimiento)
+        {
+            var query = _context.Usuarios.AsQueryable();
+
+            if (!string.IsNullOrEmpty(criterio))
+            {
+                switch (filtro)
+                {
+                    case "1":
+                        query = query.Where(u => u.UsuarioId.ToString() == criterio);
+                        break;
+                    case "2":
+                        query = query.Where(u => u.NombreCompleto.Contains(criterio));
+                        break;
+                    case "3":
+                        if (fechaNacimiento.HasValue)
+                        {
+                            var fecha = fechaNacimiento.Value;
+                            query = query.Where(u => u.FechaNacimiento.Year == fecha.Year &&
+                                                     u.FechaNacimiento.Month == fecha.Month &&
+                                                     u.FechaNacimiento.Day == fecha.Day);
+                        }
+                        break;
+                    case "4":
+                        query = query.Where(u => u.NombreUsuario.Contains(criterio));
+                        break;
+                    case "5":
+                        query = query.Where(u => u.Email.Contains(criterio));
+                        break;
+                    case "6":
+                        if (int.TryParse(criterio, out var rolId))
+                        {
+                            query = query.Where(u => u.Rol == rolId);
+                        }
+                        break;
+                }
+            }
+
+            var filteredUsers = await query.ToListAsync();
+            return Ok(filteredUsers);
+        }
+
+
         [HttpGet("GetRoles")]
         public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
         {

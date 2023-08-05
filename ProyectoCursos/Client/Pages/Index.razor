@@ -23,10 +23,12 @@
                     <img src="@imgSrc" alt="Imagen del curso" class="item-imagen" />
                 }
             </div>
-            <div class="card-body">
+            <div class="form-group card-body">
                 @item.NombreCurso
                 @item.FechaAlta.ToString("dd/MM/yyyy")
                 @item.FechaBaja.ToString("dd/MM/yyyy")
+                @item.Precio
+
             </div>
         </div>
     }
@@ -37,7 +39,7 @@
 
     override protected async Task OnInitializedAsync()
     {
-        // Recuperar información de usuario desde localStorage
+        
         var userJson = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "user");
         if (!string.IsNullOrEmpty(userJson))
         {

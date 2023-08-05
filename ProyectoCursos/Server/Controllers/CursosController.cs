@@ -45,7 +45,7 @@ namespace ProyectoCursos.Server.Controllers
             {
                 return NotFound();
             }
-            var Cursos = await _context.Cursos.Include(c => c.Categorias).FirstOrDefaultAsync(c => c.CursoId == id);
+            var Cursos = await _context.Cursos.FindAsync(id);
 
             if (Cursos == null)
             {

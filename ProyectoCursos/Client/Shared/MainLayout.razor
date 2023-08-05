@@ -35,6 +35,6 @@
     {
         usuarioAutenticadoService.Usuario = null;
         await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "user");
-        NavigationManager.NavigateTo("/"); // Puedes redirigir a la página de inicio de sesión
+        NavigationManager.NavigateTo("/"); 
     }
 }

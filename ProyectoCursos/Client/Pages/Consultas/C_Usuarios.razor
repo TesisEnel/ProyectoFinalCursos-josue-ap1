@@ -21,8 +21,9 @@
                     <InputSelect class="form-control col-2" @bind-Value="filtro">
                         <option value="1">UsuarioId</option>
                         <option value="2">NombreCompleto</option>
-                        <option value="3">NombreUsuario</option>
-                        <option value="4">Email</option>
+                        <option value="3">FechaNacimiento</option>
+                        <option value="4">NombreUsuario</option>
+                        <option value="5">Email</option>
                         <option value="6">Rol</option>
 
                     </InputSelect>
@@ -48,6 +49,7 @@
                     <tr>
                         <th>UsuarioId</th>
                         <th>Nombre Completo</th>
+                        <th>Fecha de Nacimiento</th>
                         <th>Nombre de Usuario</th>
                         <th>Email</th>
                         <th>Password</th>
@@ -61,6 +63,7 @@
                         <tr>
                             <td>@item.UsuarioId</td>
                             <td>@item.NombreCompleto</td>
+                            <td>@item.FechaNacimiento.ToString("dd/MM/yyyy")</td>
                             <td>@item.NombreUsuario</td>
                             <td>@item.Email</td>
                             <td>@item.Password</td>
@@ -108,7 +111,20 @@
 
     public async Task Buscar()
     {
-        Usuarios = await httpClient.GetFromJsonAsync<List<Usuarios>>($"api/Usuario");
+        var filterQuery = "api/Usuario?";
+
+        if (!string.IsNullOrEmpty(Criterio))
+        {
+            filterQuery += $"filtro={filtro}&criterio={Criterio}&";
+        }
+
+        if (filtro == "3" && DateTime.TryParse(Criterio, out DateTime fechaNacimiento))
+        {
+            var fechaFormatted = fechaNacimiento.ToString("yyyy-MM-dd");
+            filterQuery += $"fechaNacimiento={fechaFormatted}&";
+        }
+
+        Usuarios = await httpClient.GetFromJsonAsync<List<Usuarios>>(filterQuery);
 
         conteo = Usuarios != null ? Usuarios!.Count() : 0;
         StateHasChanged();

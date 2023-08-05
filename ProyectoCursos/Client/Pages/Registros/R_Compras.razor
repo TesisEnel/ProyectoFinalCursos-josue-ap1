@@ -20,7 +20,7 @@
                     <img src="@imgSrc" alt="Imagen del curso" class="item-imagen" />
                 }
             </div>
-            <h3>@Curso?.NombreCurso</h3>
+            <h3>@Curso?.NombreCurso - @Categorias?.CategoriaNombre </h3>
         </div>
         <div class=card-body>
 
@@ -44,10 +44,7 @@
                 <label class="form-label">@Curso?.Programa</label>
             </div>
 
-            @*Categoria*@
-            <div class="form-group mb-3">
-                <label class="form-label">@Curso?.Categorias</label>
-            </div>
+
 
             @*Precio*@
             <div class="form-group mb-3">
@@ -74,10 +71,10 @@
         {
             user = usuarioAutenticadoService.Usuario;
             var resultado = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{CursoId}");
-            //var categoria = await httpClient.GetFromJsonAsync<Categorias>($"api/Categorias/{resultado.Categorias}");
+            var categoria = await httpClient.GetFromJsonAsync<Categorias>($"api/Categoria/{resultado.Categorias}");
             if (resultado != null)
             {
-                // Categorias = categoria.CategoriaId;
+                Categorias = categoria;
                 Curso = resultado;
             }
 
