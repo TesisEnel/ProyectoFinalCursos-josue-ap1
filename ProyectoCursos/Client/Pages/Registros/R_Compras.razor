@@ -60,7 +60,7 @@
     [Parameter]
     public int CursoId { get; set; }
     public int UsuarioId { get; set; }
-    public Cursos? Curso { get; set; }
+    public Cursos Curso { get; set; }
     public Carrito Compra { get; set; } = new Carrito();
     public Usuarios? user { get; set; }
     public Categorias? Categorias { get; set; }
@@ -91,22 +91,74 @@
 
     public async Task Guardar()
     {
-
         if (user == null || Curso == null)
         {
             notificationService.ShowNotification(
-               titulo: "Error",
-               mensaje: "Tiene que estar logeado para comprar",
-               NotificationSeverity.Error
-           );
+                titulo: "Error",
+                mensaje: "Tiene que estar logeado para comprar",
+                NotificationSeverity.Error
+            );
             return;
         }
 
         Compra.UsuarioId = user.UsuarioId;
         Compra.CursoId = Curso.CursoId;
-        usuarioAutenticadoService.Usuario.Carrito.Add(Compra);
+        Compra.NombreCurso = Curso.NombreCurso;
+        Compra.FechaInicioCurso = Curso.FechaAlta;
+        Compra.FechaFinCurso = Curso.FechaBaja;
+        Compra.PrecioCurso = Curso.Precio;
 
+        try
+        {
+            using var response = await httpClient.PostAsJsonAsync($"api/Compras?cursoId={Curso.CursoId}&usuarioId={user.UsuarioId}", Compra);
 
+            if (response.IsSuccessStatusCode)
+            {
+                var exito = await response.Content.ReadFromJsonAsync<Carrito>();
+
+                if (exito != null)
+                {
+                    var nuevaCompra = new Carrito
+                        {
+                            CompraId = exito.CompraId,
+                            UsuarioId = user.UsuarioId,
+                            CursoId = Curso.CursoId,
+                            NombreCurso = Curso.NombreCurso,
+                            Fecha = DateTime.Now,
+                            FechaInicioCurso = Curso.FechaAlta,
+                            FechaFinCurso = Curso.FechaBaja,
+                            PrecioCurso = Curso.Precio,
+                            Usuario = user,  
+                            Curso = Curso   
+                        };
+
+                    usuarioAutenticadoService.Usuario.Carrito.Add(nuevaCompra);
+                    notificationService.ShowNotification(
+                        titulo: "Éxito",
+                        mensaje: "Curso añadido al carrito",
+                        NotificationSeverity.Success
+                    );
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "El curso no se pudo agregar al carrito. Detalles: " + errorContent,
+                    NotificationSeverity.Error
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            notificationService.ShowNotification(
+                titulo: "Error",
+                mensaje: "Ocurrió un error al agregar el curso al carrito: " + ex.Message,
+                NotificationSeverity.Error
+            );
+        }
     }
+
 
 }

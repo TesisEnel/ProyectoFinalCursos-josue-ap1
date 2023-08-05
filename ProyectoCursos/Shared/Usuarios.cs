@@ -36,7 +36,6 @@ namespace ProyectoCursos.Shared
 
         public int Rol { get; set; }
 
-        [ForeignKey(("UsuarioId"))]
         public ICollection<Carrito> Carrito { get; set; } = new List<Carrito>();
 
     }

@@ -25,7 +25,7 @@ namespace ProyectoCursos.Server.DAL
                     FechaNacimiento = new DateTime(2001, 4, 6),
                     NombreUsuario = "Admin",
                     Email = "Eladmin@gmail.com",
-                    Password = "admin123",
+                    Password = "Admin#123",
                     Rol = 1 },
             });
 

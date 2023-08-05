@@ -270,12 +270,16 @@
 
         try
         {
+
             using var response = await httpClient.PostAsJsonAsync<Usuarios>("api/Usuario", Usuarios);
             response.EnsureSuccessStatusCode();
+
 
             var exito = await response.Content.ReadFromJsonAsync<Usuarios>();
             if (exito is not null)
             {
+
+                confirmPassword = "";
                 Usuarios = exito;
                 StateHasChanged();
                 notificationService.ShowNotification(
@@ -283,6 +287,8 @@
                     mensaje: "Registro guardado",
                     NotificationSeverity.Success
                 );
+                
+
             }
         }
         catch (HttpRequestException ex)
