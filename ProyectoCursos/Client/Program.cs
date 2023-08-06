@@ -5,6 +5,7 @@ using ProyectoCursos.Client.Sesion;
 using Radzen;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
+using ProyectoCursos.Client.Notificaciones;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

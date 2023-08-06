@@ -34,9 +34,12 @@ namespace ProyectoCursos.Shared
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,16}$", ErrorMessage = "La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, un número y un símbolo.")]
         public string? Password { get; set; }
 
+        [NotMapped]
+        public Carrito Carrito { get; set; } = new Carrito();
         public int Rol { get; set; }
 
-        public ICollection<Carrito> Carrito { get; set; } = new List<Carrito>();
+        [ForeignKey(("UsuarioId"))]
+        public ICollection<Compras> Compras { get; set; } = new List<Compras>();
 
     }
 }

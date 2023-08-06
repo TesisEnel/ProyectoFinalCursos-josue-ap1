@@ -17,42 +17,6 @@ namespace ProyectoCursos.Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
 
-            modelBuilder.Entity("ProyectoCursos.Shared.Carrito", b =>
-                {
-                    b.Property<int>("CompraId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CursoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("FechaFinCurso")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("FechaInicioCurso")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NombreCurso")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PrecioCurso")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CompraId");
-
-                    b.HasIndex("CursoId");
-
-                    b.HasIndex("UsuarioId");
-
-                    b.ToTable("Compras");
-                });
-
             modelBuilder.Entity("ProyectoCursos.Shared.Categorias", b =>
                 {
                     b.Property<int>("CategoriaId")
@@ -73,6 +37,28 @@ namespace ProyectoCursos.Server.Migrations
                     b.HasKey("CategoriaId");
 
                     b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
+                {
+                    b.Property<int>("CompraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CursoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CompraId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Compras");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Cursos", b =>
@@ -98,8 +84,8 @@ namespace ProyectoCursos.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Precio")
-                        .HasColumnType("INTEGER");
+                    b.Property<double>("Precio")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("Programa")
                         .IsRequired()
@@ -221,28 +207,18 @@ namespace ProyectoCursos.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProyectoCursos.Shared.Carrito", b =>
+            modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
                 {
-                    b.HasOne("ProyectoCursos.Shared.Cursos", "Curso")
-                        .WithMany()
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProyectoCursos.Shared.Usuarios", "Usuario")
-                        .WithMany("Carrito")
+                    b.HasOne("ProyectoCursos.Shared.Usuarios", null)
+                        .WithMany("Compras")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Curso");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>
                 {
-                    b.Navigation("Carrito");
+                    b.Navigation("Compras");
                 });
 #pragma warning restore 612, 618
         }

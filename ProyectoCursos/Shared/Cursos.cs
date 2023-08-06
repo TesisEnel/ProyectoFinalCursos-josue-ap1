@@ -35,8 +35,7 @@ namespace ProyectoCursos.Shared
         [Required(ErrorMessage = "* El campo CategoriaId es obligatorio")]
         public int Categorias { get; set; }
 
-       
-        public int Precio { get; set; }
+        public double Precio { get; set; }
 
 
     }

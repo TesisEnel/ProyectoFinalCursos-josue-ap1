@@ -1,80 +1,77 @@
 ﻿@page "/CarritoCompra"
-@page "/CarritoCompra/{CompraId:int}"
 @using ProyectoCursos.Client.Sesion;
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 @inject NotificationService notificationService
-
 @inject HttpClient httpClient
 
 <PageTitle>RussoCursos - Carrito de Compras</PageTitle>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre del Curso</th>
-            <th>Fecha de Inicio</th>
-            <th>Fecha de Fin</th>
-            <th>Fecha de Compra</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var compra in user.Carrito)
-        {
+@if (carritoItems.Count == 0)
+{
+    <p>Tu carrito de compras está vacío.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>@compra.NombreCurso</td>
-                <td>@compra.FechaInicioCurso.ToString("dd/MM/yyyy")</td>
-                <td>@compra.FechaFinCurso.ToString("dd/MM/yyyy")</td>
-                <td>@compra.Fecha.ToString("dd/MM/yyyy")</td>
-                <td>@compra.PrecioCurso</td>
-                <td>
-                    <button class="btn btn-danger" @onclick="() => EliminarDelCarrito(compra.CompraId)">Eliminar</button>
-                </td>
+                <th>Nombre del Curso</th>
+                <th>Fecha de Inicio</th>
+                <th>Fecha de Fin</th>
+                <th>Precio</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var compra in carritoItems)
+            {
+                <tr>
+                    <td>@compra.NombreCurso</td>
+                    <td>@compra.FechaAlta.ToString("dd/MM/yyyy")</td>
+                    <td>@compra.FechaBaja.ToString("dd/MM/yyyy")</td>
+                    <td>@compra.Precio.ToString("0.00")</td>
+                    <td>
+                        <button class="btn btn-outline-danger" @onclick="() => EliminarDelCarrito(compra.CursoId)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    public List<Cursos> carritoItems = new List<Cursos>();
 
-    [Parameter]
-    public int CompraId { get; set; }
-    public Usuarios user { get; set; }
-
-    public List<Carrito> carritoItems = new List<Carrito>(); 
-
-    private async Task EliminarDelCarrito(int compraId)
+    protected override async Task OnInitializedAsync()
     {
-        var compra = user.Carrito.FirstOrDefault(c => c.CompraId == compraId);
-        if (compra == null)
-        {
-            notificationService.ShowNotification(
-                titulo: "Error",
-                mensaje: "La compra no existe en el carrito",
-                NotificationSeverity.Error
-            );
-            return;
-        }
+        await CargarCarrito();
+    }
 
-        var response = await httpClient.DeleteAsync($"api/Compras/{compraId}");
-        if (response.IsSuccessStatusCode)
+    private async Task CargarCarrito()
+    {
+        carritoItems.Clear();
+
+        foreach (var carrito in usuarioAutenticadoService.Usuario.Compras)
         {
-            user.Carrito.Remove(compra);  
-            notificationService.ShowNotification(
-                titulo: "Éxito",
-                mensaje: "El curso se eliminó del carrito",
-                NotificationSeverity.Success
-            );
-        }
-        else
-        {
-            notificationService.ShowNotification(
-                titulo: "Error",
-                mensaje: "No se pudo eliminar el curso del carrito",
-                NotificationSeverity.Error
-            );
+            var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{carrito.CursoId}");
+            carritoItems.Add(buscar);
         }
     }
 
+    private async Task EliminarDelCarrito(int cursoId)
+    {
+        var cursoAEliminar = carritoItems.FirstOrDefault(c => c.CursoId == cursoId);
+
+        if (cursoAEliminar != null)
+        {
+            usuarioAutenticadoService.RemoverCursoDelCarrito(cursoAEliminar);
+            await CargarCarrito();
+
+            notificationService.ShowNotification(
+                titulo: "Curso eliminado",
+                mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
+                NotificationSeverity.Success
+            );
+        }
+    }
 }

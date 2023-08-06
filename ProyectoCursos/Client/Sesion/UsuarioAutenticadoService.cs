@@ -10,6 +10,10 @@ namespace ProyectoCursos.Client.Sesion
     {
         Task CargarUsuarioAsync();
         Usuarios Usuario { get; set; }
+        void AgregarCursoAlCarrito(Cursos curso);
+        List<Cursos> ObtenerCursosDelCarrito();
+        void RemoverCursoDelCarrito(Cursos curso);
+
     }
 
     public class UsuarioAutenticadoService : IUsuarioAutenticadoService
@@ -45,6 +49,34 @@ namespace ProyectoCursos.Client.Sesion
         {
             var userJson = JsonSerializer.Serialize(usuario);
             await jsRuntime.InvokeVoidAsync("localStorage.setItem", "user", userJson);
+        }
+
+        public void AgregarCursoAlCarrito(Cursos curso)
+        {
+            if (Usuario != null)
+            {
+                Usuario.Carrito.Cursos.Add(curso);
+                GuardarUsuarioEnLocalStorageAsync(Usuario);
+            }
+        }
+
+        public List<Cursos> ObtenerCursosDelCarrito()
+        {
+            return Usuario?.Carrito?.Cursos ?? new List<Cursos>();
+        }
+
+        public void RemoverCursoDelCarrito(Cursos curso)
+        {
+            if (Usuario != null && curso != null && Usuario.Compras != null)
+            {
+                var compraAEliminar = Usuario.Compras.FirstOrDefault(c => c.CursoId == curso.CursoId);
+
+                if (compraAEliminar != null)
+                {
+                    Usuario.Compras.Remove(compraAEliminar);
+                    GuardarUsuarioEnLocalStorageAsync(Usuario);
+                }
+            }
         }
     }
 }

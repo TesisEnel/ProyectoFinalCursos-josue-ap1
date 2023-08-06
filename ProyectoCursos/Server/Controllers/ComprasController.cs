@@ -18,37 +18,30 @@ namespace ProyectoCursos.Server.Controllers
             _context = context;
         }
 
+
+        
+
         public bool ComprasExiste(int id)
         {
             return (_context.Compras?.Any(c => c.CompraId == id)).GetValueOrDefault();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Carrito>> PostCompras(int cursoId, int usuarioId, Carrito Compra)
+        public async Task<ActionResult<Compras>> PostCompras(Compras Compras)
         {
-            var curso = await _context.Cursos.FindAsync(cursoId);
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
 
-            if (curso == null || usuario == null)
+            if (!ComprasExiste(Compras.CompraId))
             {
-                return BadRequest("Curso o usuario no encontrados.");
-            }
-
-            Compra.Curso = curso;
-            Compra.Usuario = usuario;
-
-            if (!ComprasExiste(Compra.CompraId))
-            {
-                _context.Compras.Add(Compra);
+                _context.Compras.Add(Compras);
             }
             else
             {
-                _context.Compras.Update(Compra);
+                _context.Compras.Update(Compras);
             }
-
             await _context.SaveChangesAsync();
-            return Ok(Compra);
+            return Ok(Compras);
         }
+
 
         [HttpDelete("{id}")]
 
@@ -58,12 +51,12 @@ namespace ProyectoCursos.Server.Controllers
             {
                 return NotFound();
             }
-            var carrito = await _context.Compras.FindAsync(id);
-            if (carrito == null)
+            var Compras = await _context.Compras.FindAsync(id);
+            if (Compras == null)
             {
                 return NotFound();
             }
-            _context.Compras.Remove(carrito);
+            _context.Compras.Remove(Compras);
             await _context.SaveChangesAsync();
             return NoContent();
         }

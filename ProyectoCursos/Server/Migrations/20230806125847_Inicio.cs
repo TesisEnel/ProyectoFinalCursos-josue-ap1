@@ -41,7 +41,7 @@ namespace ProyectoCursos.Server.Migrations
                     Programa = table.Column<string>(type: "TEXT", nullable: false),
                     FechaBaja = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Categorias = table.Column<int>(type: "INTEGER", nullable: false),
-                    Precio = table.Column<int>(type: "INTEGER", nullable: false)
+                    Precio = table.Column<double>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,21 +100,11 @@ namespace ProyectoCursos.Server.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     UsuarioId = table.Column<int>(type: "INTEGER", nullable: false),
                     CursoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    NombreCurso = table.Column<string>(type: "TEXT", nullable: true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    FechaInicioCurso = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    FechaFinCurso = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PrecioCurso = table.Column<int>(type: "INTEGER", nullable: false)
+                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Compras", x => x.CompraId);
-                    table.ForeignKey(
-                        name: "FK_Compras_Cursos_CursoId",
-                        column: x => x.CursoId,
-                        principalTable: "Cursos",
-                        principalColumn: "CursoId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Compras_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
@@ -149,11 +139,6 @@ namespace ProyectoCursos.Server.Migrations
                 values: new object[] { 1, "Eladmin@gmail.com", new DateTime(2001, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Josue Russo", "Admin", "Admin#123", 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Compras_CursoId",
-                table: "Compras",
-                column: "CursoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Compras_UsuarioId",
                 table: "Compras",
                 column: "UsuarioId");
@@ -169,13 +154,13 @@ namespace ProyectoCursos.Server.Migrations
                 name: "Compras");
 
             migrationBuilder.DropTable(
+                name: "Cursos");
+
+            migrationBuilder.DropTable(
                 name: "Niveles");
 
             migrationBuilder.DropTable(
                 name: "Roles");
-
-            migrationBuilder.DropTable(
-                name: "Cursos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

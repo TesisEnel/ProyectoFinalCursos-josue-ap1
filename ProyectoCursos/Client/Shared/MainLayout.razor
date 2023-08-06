@@ -18,7 +18,7 @@
         @if (usuarioAutenticadoService.Usuario != null)
         {
             <div class="top-row px-4">
-                <a href="CarritoCompra" class="mr-2"><i class="oi oi-cart"></i> Carrito</a>
+                <a href="CarritoCompra" class="mr-2 mx-3"><i class="oi oi-cart"/> (@usuarioAutenticadoService.Usuario.Compras.Count) </a>
                 <span>¡Bienvenido, @usuarioAutenticadoService.Usuario.NombreUsuario!</span>
                 <button @onclick="CerrarSesion" class="btn btn-link">Cerrar Sesión</button>
             </div>

@@ -99,7 +99,11 @@ namespace ProyectoCursos.Server.Controllers
             {
                 return NotFound();
             }
-            var Usuarios = await _context.Usuarios.FindAsync(id);
+            var Usuarios = _context.Usuarios
+                .Where(u => u.UsuarioId == id)
+                .Include(c => c.Compras)
+                .AsNoTracking()
+                .SingleOrDefault();
 
             if (Usuarios == null)
             {
@@ -108,6 +112,7 @@ namespace ProyectoCursos.Server.Controllers
 
             return Usuarios;
         }
+            
 
         public bool UsuarioExiste(int id)
         {
