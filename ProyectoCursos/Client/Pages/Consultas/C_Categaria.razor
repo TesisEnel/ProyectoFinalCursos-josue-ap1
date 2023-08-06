@@ -1,6 +1,107 @@
-﻿@using ProyectoCursos.Client.Sesion;
+﻿@page "/ConsultaCategoria"
+@using ProyectoCursos.Client.Sesion;
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 
-@code {
+@inject HttpClient httpClient
 
+<div class="card">
+    <div class="card">
+
+        <div class="card-header">
+            <h3> Consulta de Categorias </h3>
+        </div>
+
+        <div class="card-body">
+
+            <form>
+                <div class="input-group d-flex align-items-end">
+
+                    <InputSelect class="form-control col-2" @bind-Value="filtro">
+                        <option value="1">CategoriaId</option>
+                        <option value="2">CategoriaNombre</option>
+                        <option value="3">Descripcion</option>
+                        <option value="4">Nivel</option>           
+                    </InputSelect>
+
+                    <div class="flex-fill mx-2">
+
+                        <div class="input-group">
+                            <label class="input-group-text"> Busqueda </label>
+                            <InputText class="form-control" @bind-Value="Criterio" />
+                        </div>
+
+                    </div>
+
+                    <button type="button" class="btn btn-sm-10 btn-primary" @onclick="Buscar"> <span class="oi oi-magnifying-glass"></span> Buscar </button>
+                </div>
+            </form>
+
+        </div>
+        @if (Categorias is not null)
+        {
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>CategoriaId</th>
+                        <th>Categoria Nombre</th>
+                        <th>Descripc&iacute;on</th>
+                        <th>Nivel</th>               
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Categorias)
+                    {
+                        <tr>
+                            <td>@item.CategoriaId</td>
+                            <td>@item.CategoriaNombre</td>
+                            <td>@item.Descripcion</td>
+                            <td>@GetNivelNombre(item.Nivel)</td>  
+                            <td><a href="Categoria/@item.CategoriaId">Ver</a></td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+    </div>
+    <div class="card-footer">
+        <div class="form-row justify-content-sm-between" aria-orientation="vertical">
+            <div class="col-3">
+                <label for="CantidaRegistro" class="col-form-label"><strong>Filas</strong>&nbsp;</label>
+                <input id="CantidaRegistro" @bind-value="@conteo" disabled class="form-control" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Categorias>? Categorias { get; set; }
+    public int conteo { get; set; }
+    public string filtro { get; set; }
+    public string Criterio { get; set; }
+    public List<Niveles>? Niveles { get; set; } = new List<Niveles>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BuscarNiveles();
+    }
+
+    public string GetNivelNombre(int nivelid)
+    {
+        var nivel = Niveles.FirstOrDefault(n => n.NivelId == nivelid);
+        return nivel != null ? nivel.Nivelnombre : "Nivel desconocido";
+    }
+    public async Task Buscar()
+    {
+        Categorias = await httpClient.GetFromJsonAsync<List<Categorias>>($"api/Categoria");
+
+        conteo = Categorias != null ? Categorias!.Count() : 0;
+        StateHasChanged();
+    }
+    public async Task BuscarNiveles()
+    {
+        Niveles = await httpClient.GetFromJsonAsync<List<Niveles>>("api/Categoria/GetNiveles");
+    }
 }

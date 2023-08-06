@@ -48,7 +48,7 @@
                     <label class="form-label">
                         Niveles:
                         <InputSelect @bind-Value="Categorias.Nivel" class="dropdown-toggle" required>
-                            <option value="0">Seleccione un nivel</option>
+                            <option value="0"disabled>Seleccione un nivel</option>
                             @foreach (var nivel in Niveles)
                             {
                                 <option value="@nivel.NivelId">@nivel.Nivelnombre</option>
@@ -143,6 +143,16 @@
     {
         try
         {
+
+            if (Categorias.Nivel == 0)
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "Debe seleccionar una nivel antes de guardar.",
+                    NotificationSeverity.Error
+                );
+                return;
+            }
             using var response = await httpClient.PostAsJsonAsync<Categorias>("api/Categoria", Categorias);
 
             if (response.IsSuccessStatusCode)

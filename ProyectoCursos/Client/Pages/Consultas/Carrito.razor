@@ -9,38 +9,42 @@
 
 <PageTitle>RussoCursos - Carrito de Compras</PageTitle>
 
-@if (carritoItems.Count == 0)
-{
-    <p>Tu carrito de compras está vacío.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre del Curso</th>
-                <th>Fecha de Inicio</th>
-                <th>Fecha de Fin</th>
-                <th>Precio</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var compra in carritoItems)
-            {
+<div class="container shadow p-4">
+    <h3 class="mb-4">Carrito de Compras</h3>
+
+    @if (carritoItems.Count == 0)
+    {
+        <p>Tu carrito de compras está vacío.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@compra.NombreCurso</td>
-                    <td>@compra.FechaAlta.ToString("dd/MM/yyyy")</td>
-                    <td>@compra.FechaBaja.ToString("dd/MM/yyyy")</td>
-                    <td>@compra.Precio.ToString("0.00")</td>
-                    <td>
-                        <button class="btn btn-outline-danger" @onclick="() => EliminarDelCarrito(compra.CursoId)">Eliminar</button>
-                    </td>
+                    <th>Nombre del Curso</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Fin</th>
+                    <th>Precio</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @foreach (var compra in carritoItems)
+                {
+                    <tr>
+                        <td>@compra.NombreCurso</td>
+                        <td>@compra.FechaAlta.ToString("dd/MM/yyyy")</td>
+                        <td>@compra.FechaBaja.ToString("dd/MM/yyyy")</td>
+                        <td>@compra.Precio.ToString("0.00")</td>
+                        <td>
+                            <button class="btn btn-outline-danger" @onclick="() => EliminarDelCarrito(compra.CursoId)">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
     public List<Cursos> carritoItems = new List<Cursos>();

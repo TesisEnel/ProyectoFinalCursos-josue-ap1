@@ -76,30 +76,30 @@
                     <ValidationMessage For="@(() => Cursos.Programa)" />
                 </div>
 
-                @*Categorias*@
                 <div class="mb-3">
                     <label class="form-label">
                         Categorias:
-                        <InputSelect @bind-Value="Cursos.Categorias" class="dropdown-toggle" required>
-                            <option value="0">Seleccione un nivel</option>
-                            @foreach (var Categorias in Categorias)
+                        <InputSelect @bind-Value="Cursos.Categorias" class="dropdown-toggle">
+                            <option value="0" disabled>Seleccione un nivel</option>
+                            @foreach (var categoria in Categorias)
                             {
-                                <option value="@Categorias.CategoriaId">@Categorias.CategoriaNombre</option>
+                                <option value="@categoria.CategoriaId">@categoria.CategoriaNombre</option>
                             }
                         </InputSelect>
+                        <ValidationMessage For="@(() => Cursos.Categorias)" />
                     </label>
                 </div>
 
+
                 @*Precio*@
-                <div class="mb-3 ">
-                    <label class="form-label " for="Precio"><i class="oi oi-dollar" /> Precio:</label>
+                <div class="mb-3">
+                    <label class="form-label" for="Precio"><i class="oi oi-dollar" /> Precio:</label>
 
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <div class="  row-cols-xl-2">
-                            <InputNumber @bind-Value="Cursos.Precio" class="form-control " placeholder="Coloque el un precio" />
+                        <div class="row-cols-xl-2">
+                            <InputNumber @bind-Value="Cursos.Precio" class="form-control " placeholder="Coloque el un precio" step="0.01" />
                         </div>
-
                     </div>
                     <ValidationMessage For="@(() => Cursos.Precio)" />
                 </div>
@@ -202,6 +202,16 @@
     {
         try
         {
+            if (Cursos.Categorias == 0)
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "Debe seleccionar una categoría antes de guardar.",
+                    NotificationSeverity.Error
+                );
+                return;
+            }
+
             using var response = await httpClient.PostAsJsonAsync<Cursos>("api/Cursos", Cursos);
 
             if (response.IsSuccessStatusCode)
@@ -238,6 +248,8 @@
             );
         }
     }
+
+
 
     public void Nuevo()
     {

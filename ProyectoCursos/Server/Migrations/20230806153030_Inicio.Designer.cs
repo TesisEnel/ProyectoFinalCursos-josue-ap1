@@ -11,7 +11,7 @@ using ProyectoCursos.Server.DAL;
 namespace ProyectoCursos.Server.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230806125847_Inicio")]
+    [Migration("20230806153030_Inicio")]
     partial class Inicio
     {
         /// <inheritdoc />

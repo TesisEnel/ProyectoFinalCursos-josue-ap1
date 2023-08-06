@@ -32,9 +32,11 @@ namespace ProyectoCursos.Shared
         [Required(ErrorMessage = "* El campo fecha Fin es obligatorio")]
         public DateTime FechaBaja { get; set; } = DateTime.Now;
 
-        [Required(ErrorMessage = "* El campo CategoriaId es obligatorio")]
+        [Required(ErrorMessage = "Seleccione una categoría.")]
         public int Categorias { get; set; }
 
+        [Required(ErrorMessage = "* El campo Precio es obligatorio")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "* El campo Precio debe ser mayor a 0")]
         public double Precio { get; set; }
 
 

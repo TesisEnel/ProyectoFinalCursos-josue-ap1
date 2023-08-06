@@ -1,5 +1,5 @@
 ﻿@page "/Compra/{CursoId:int}"
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 @using Microsoft.AspNetCore.Authorization;
 @using ProyectoCursos.Client.Sesion;
 @using ProyectoCursos.Shared;
@@ -49,7 +49,7 @@
             @*Precio*@
             <div class="form-group mb-3">
                 <label class="form-label">@Curso?.Precio.ToString("0.00")</label>
-                <button type="button" class="btn btn-outline-primary" @onclick="AgregarAlCarrito">Comprar <i class="oi oi-cart" /></button>
+                <button type="button" class="btn btn-outline-primary" @onclick="AgregarAlCarrito">Añadir al Carrito <i class="oi oi-cart" /></button>
             </div>
 
         </div>
@@ -92,11 +92,11 @@
 
     private async Task AgregarAlCarrito()
     {
-        if (user == null || Curso == null)
+        if (user == null)
         {
             notificationService.ShowNotification(
                 titulo: "Error",
-                mensaje: "Tiene que estar logeado para comprar",
+                mensaje: "Debes iniciar sesión para comprar",
                 NotificationSeverity.Error
             );
             return;
@@ -111,9 +111,21 @@
             );
             return;
         }
+
+        // Verificar si el usuario ya ha comprado el curso
+        if (user.Compras.Any(compra => compra.CursoId == Curso.CursoId))
+        {
+            notificationService.ShowNotification(
+                titulo: "Advertencia",
+                mensaje: "Ya has comprado este curso previamente.",
+                NotificationSeverity.Warning
+            );
+            return;
+        }
+
         Compra.UsuarioId = user.UsuarioId;
         Compra.CursoId = Curso.CursoId;
-        usuarioAutenticadoService.Usuario.Compras.Add(Compra);
+        user.Compras.Add(Compra);
         usuarioAutenticadoService.AgregarCursoAlCarrito(Curso);
 
         notificationService.ShowNotification(
@@ -122,4 +134,5 @@
             NotificationSeverity.Success
         );
     }
+
 }

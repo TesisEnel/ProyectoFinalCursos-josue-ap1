@@ -28,6 +28,12 @@
                 @item.FechaBaja.ToString("dd/MM/yyyy")
                 @item.Precio
 
+                @if (usuarioAutenticadoService.Usuario != null &&
+               usuarioAutenticadoService.Usuario.Compras.Any(c => c.CursoId == item.CursoId))
+                {
+                    <p>¡Añadido en el carrito!</p>
+                }
+
             </div>
         </div>
     }

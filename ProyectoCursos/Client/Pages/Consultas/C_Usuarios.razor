@@ -51,8 +51,7 @@
                         <th>Nombre Completo</th>
                         <th>Fecha de Nacimiento</th>
                         <th>Nombre de Usuario</th>
-                        <th>Email</th>
-                        <th>Password</th>
+                        <th>Email</th>              
                         <th>Rol</th>
                         <th></th>
                     </tr>
@@ -66,7 +65,6 @@
                             <td>@item.FechaNacimiento.ToString("dd/MM/yyyy")</td>
                             <td>@item.NombreUsuario</td>
                             <td>@item.Email</td>
-                            <td>@item.Password</td>
                             <td>@GetRolNombre(item.Rol)</td> 
                             <td><a href="Usuarios/@item.UsuarioId">Ver</a></td>
                         </tr>
