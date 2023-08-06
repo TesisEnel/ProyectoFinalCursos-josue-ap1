@@ -30,21 +30,21 @@
 
                 @*Nombre del Curso*@
                 <div class="mb-3 ">
-                    <label class="form-label oi oi-bookmark " for="NombreCurso">Nombre del Curso:</label>
+                    <label class="form-label" for="NombreCurso"><i class="oi oi-bookmark" /> Nombre del Curso:</label>
                     <InputText @bind-Value="Cursos.NombreCurso" class="form-control " placeholder="Coloque un nombre para el curso" />
                     <ValidationMessage For="@(() => Cursos.NombreCurso)" />
                 </div>
 
                 @*Descripcion*@
                 <div class="mb-3">
-                    <label class="form-label oi oi-book" for="Descripcion">Descripcion:</label>
+                    <label class="form-label " for="Descripcion"><i class="oi oi-book" /> Descripcion:</label>
                     <InputTextArea @bind-Value="Cursos.Descripcion" class="form-control " placeholder="Describa las caractisticas del curso" />
                     <ValidationMessage For="@(() => Cursos.Descripcion)" />
                 </div>
 
                 @*Imagen*@
                 <div class="mb-3">
-                    <label class="form-label oi oi-puzzle-piece" for="Imagen">Imagen:</label>
+                    <label class="form-label" for="Imagen"><i class="oi oi-puzzle-piece" /> Imagen:</label>
                     <InputFile OnChange="CargarImagen" class="form-control" accept=".png, .jpg, .jpeg" />
                     <ValidationMessage For="@(() => Cursos.RutaImagen)" />
                 </div>
@@ -71,7 +71,7 @@
 
                 @*Programa*@
                 <div class="form-group mb-3">
-                    <label class="form-label  oi oi-check" for="Programa">Programa:</label>
+                    <label class="form-label" for="Programa"><i class="oi oi oi-check"/> Programa:</label>
                     <InputTextArea @bind-Value="Cursos.Programa" class="form-control" placeholder="Coloque el programa" />
                     <ValidationMessage For="@(() => Cursos.Programa)" />
                 </div>

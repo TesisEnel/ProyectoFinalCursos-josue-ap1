@@ -1,5 +1,8 @@
 ﻿@page "/CarritoCompra"
+
 @using ProyectoCursos.Client.Sesion;
+@using System.Text.Json;
+@inject IJSRuntime jsRuntime
 @inject IUsuarioAutenticadoService usuarioAutenticadoService
 @inject NotificationService notificationService
 @inject HttpClient httpClient
@@ -45,6 +48,15 @@ else
     protected override async Task OnInitializedAsync()
     {
         await CargarCarrito();
+
+        var userJson = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "user");
+        if (!string.IsNullOrEmpty(userJson))
+        {
+            usuarioAutenticadoService.Usuario = JsonSerializer.Deserialize<Usuarios>(userJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
     }
 
     private async Task CargarCarrito()
