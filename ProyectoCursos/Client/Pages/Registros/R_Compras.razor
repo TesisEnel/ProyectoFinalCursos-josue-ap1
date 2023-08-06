@@ -112,12 +112,12 @@
             return;
         }
 
-        // Verificar si el usuario ya ha comprado el curso
+        
         if (user.Compras.Any(compra => compra.CursoId == Curso.CursoId))
         {
             notificationService.ShowNotification(
                 titulo: "Advertencia",
-                mensaje: "Ya has comprado este curso previamente.",
+                mensaje: "Ya has añadido este curso previamente.",
                 NotificationSeverity.Warning
             );
             return;
