@@ -6,7 +6,7 @@ En este proyecto se puede registrar el usuario logearse con su Email y con su co
 
 ### Login
 ### Email: Eladmin@gmail.com
-### Contraseña: admin123
+### Contraseña: Admin#123
 
 [![Login](https://github.com/josueRusso/ProyectoFinalCursos/blob/main/imagen/login.png?raw=true "Login")](https://github.com/josueRusso/ProyectoFinalCursos/blob/main/imagen/login.png?raw=true "Login")
 
