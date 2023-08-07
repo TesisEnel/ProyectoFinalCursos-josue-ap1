@@ -67,13 +67,13 @@ namespace ProyectoCursos.Client.Sesion
 
         public void RemoverCursoDelCarrito(Cursos curso)
         {
-            if (Usuario != null && curso != null && Usuario.Carrito?.Cursos != null)
+            if (Usuario != null && curso != null && Usuario.Compras != null)
             {
-                var cursoAEliminar = Usuario.Carrito.Cursos.FirstOrDefault(c => c.CursoId == curso.CursoId);
+                var compraAEliminar = Usuario.Compras.FirstOrDefault(c => c.CursoId == curso.CursoId);
 
-                if (cursoAEliminar != null)
+                if (compraAEliminar != null)
                 {
-                    Usuario.Carrito.Cursos.Remove(cursoAEliminar);
+                    Usuario.Compras.Remove(compraAEliminar);
                     GuardarUsuarioEnLocalStorageAsync(Usuario);
                 }
             }

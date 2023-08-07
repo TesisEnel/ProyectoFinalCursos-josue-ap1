@@ -40,14 +40,14 @@
                                 <button type="submit" @onclick="@HandleLogin" class="btn btn-primary">Iniciar Sesión</button>
                                 <button type="submit" @onclick="@RegistroNagate" class="btn btn-link">Registro</button>
                             </div>
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <p class="text-danger text-center mt-3">@errorMessage</p>
+
+
+                            }
                         </EditForm>
 
-                        @if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            <p class="text-danger text-center mt-3">@errorMessage</p>
-
-
-                        }
                     </div>
                 </div>
             </div>
@@ -55,10 +55,6 @@
     </div>
 </div>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p class="text-danger">@errorMessage</p>
-}
 
 @code {
     public Usuarios loginModel { get; set; } = new Usuarios();

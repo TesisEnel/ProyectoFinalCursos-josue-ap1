@@ -26,33 +26,39 @@
         </div>
         <div class=card-body>
 
+           
             @*Descripcion*@
-            <div class="mb-3">
-                Descripci&oacute;n
-                <label class="form-label">@Curso?.Descripcion</label>
+            Descripci&oacute;n:
+            <div class="mb-3 mx-3 ">
+                <label class="form-label"><i class="oi oi-info" /> @Curso?.Descripcion</label>
             </div>
 
             @*Fecha inicio*@
-            <div Class="form-group mb-3 margen">
-                <label class="row-text"> @Curso?.FechaAlta.ToString("dd/MM/yyyy") </label>
+            Fecha Inicio:
+            <div Class="form-group mx-3 mb-3 margen">
+                <label class="row-text"><i class="oi oi-calendar" /> @Curso?.FechaAlta.ToString("dd/MM/yyyy") </label>
             </div>
 
             @*Fecha fin*@
-            <div Class="form-group mb-3">
-                <label class="row-text">@Curso?.FechaBaja.ToString("dd/MM/yyyy") </label>
+            Fecha Fin:
+            <div Class="form-group mx-3 mb-3">
+                <label class="row-text"><i class="oi oi-calendar" />@Curso?.FechaBaja.ToString("dd/MM/yyyy") </label>
             </div>
 
             @*Programa*@
-            <div class="form-group mb-3">
-                <label class="form-label">@Curso?.Programa</label>
+            Programa:
+            <div class="form-group mx-3 mb-3">
+                <label class="form-label"><i class="oi oi-project" /> @Curso?.Programa</label>
             </div>
 
             @*Precio*@
-            <div class="form-group mb-3">
-                <label class="form-label">@Curso?.Precio.ToString("0.00")</label>
+            Precio:
+            <div class="form-group mb-3  mx-3 ">
+                <label class="form-label"><i class="oi oi-dollar" /> @Curso?.Precio.ToString("0.00")</label>
+            </div>
+            <div >
                 <button type="button" class="btn btn-outline-primary" @onclick="AgregarAlCarrito">Añadir al Carrito <i class="oi oi-cart" /></button>
             </div>
-
         </div>
     </div>
 </div>

@@ -22,17 +22,23 @@
                     <img src="@imgSrc" alt="Imagen del curso" class="item-imagen" />
                 }
             </div>
-            <div class="form-group card-body">
-                @item.NombreCurso
-                @item.FechaAlta.ToString("dd/MM/yyyy")
-                @item.FechaBaja.ToString("dd/MM/yyyy")
-                @item.Precio
 
-                @if (usuarioAutenticadoService.Usuario != null &&
-               usuarioAutenticadoService.Usuario.Compras.Any(c => c.CursoId == item.CursoId))
-                {
-                    <p>¡Añadido en el carrito!</p>
-                }
+            <div class="card-body">
+                <div class="mb-3">
+                    @item.NombreCurso
+                </div>
+                <div class="mb-3">
+                    <i class="oi oi-calendar" />@item.FechaAlta.ToString("dd/MM/yyyy")
+                    @item.FechaBaja.ToString("dd/MM/yyyy")
+                </div>
+                <div class="mb-3">
+                    <i class="oi oi-dollar" /> @item.Precio
+                </div>
+                    @if (usuarioAutenticadoService.Usuario != null &&
+                   usuarioAutenticadoService.Usuario.Compras.Any(c => c.CursoId == item.CursoId))
+                    {
+                     <p> <i class="oi oi-check" /> ¡Añadido en el carrito!</p>
+                    }
 
             </div>
         </div>

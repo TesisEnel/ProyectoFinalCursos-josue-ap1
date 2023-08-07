@@ -62,15 +62,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarCarrito();
-
-        var userJson = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "user");
-        if (!string.IsNullOrEmpty(userJson))
+        try
         {
-            usuarioAutenticadoService.Usuario = JsonSerializer.Deserialize<Usuarios>(userJson, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            await CargarCarrito();
+
+            var userJson = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "user");
+            if (!string.IsNullOrEmpty(userJson))
+            {
+                usuarioAutenticadoService.Usuario = JsonSerializer.Deserialize<Usuarios>(userJson, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+            }
+        }
+        catch (Exception ex)
+        {
+
+            notificationService.ShowNotification(
+                 titulo: "Error",
+                 mensaje: "Registro no existe porfavor haga logout: " ,
+                 NotificationSeverity.Error
+             );
         }
     }
 
@@ -102,30 +114,14 @@
 
         if (cursoAEliminar != null)
         {
-            try
-            {
-                usuarioAutenticadoService.RemoverCursoDelCarrito(cursoAEliminar);
+            usuarioAutenticadoService.RemoverCursoDelCarrito(cursoAEliminar);
+            await CargarCarrito();
 
-                var response = await httpClient.DeleteAsync($"api/Cursos/{cursoId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    await CargarCarrito();
-
-                    notificationService.ShowNotification(
-                        titulo: "Curso eliminado",
-                        mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
-                        NotificationSeverity.Success
-                    );
-                }
-                else
-                {
-                    Console.WriteLine($"Error al eliminar el curso con ID {cursoId}: {response.ReasonPhrase}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al eliminar el curso con ID {cursoId}: {ex.Message}");
-            }
+            notificationService.ShowNotification(
+                titulo: "Curso eliminado",
+                mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
+                NotificationSeverity.Success
+            );
         }
     }
 }

@@ -112,7 +112,7 @@ a, .btn-link {
 
 .item-card {
     cursor: pointer;
-    height: 35vh;
+    height: 40vh;
     margin: 10px;
     margin-inline: 60px;
     transition: .2s ease-in-out;
@@ -140,3 +140,4 @@ a, .btn-link {
     height: 95vh;
     max-width: 100%;
 }
+

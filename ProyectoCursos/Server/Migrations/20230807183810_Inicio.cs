@@ -106,12 +106,6 @@ namespace ProyectoCursos.Server.Migrations
                 {
                     table.PrimaryKey("PK_Compras", x => x.CompraId);
                     table.ForeignKey(
-                        name: "FK_Compras_Cursos_CursoId",
-                        column: x => x.CursoId,
-                        principalTable: "Cursos",
-                        principalColumn: "CursoId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Compras_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
@@ -145,11 +139,6 @@ namespace ProyectoCursos.Server.Migrations
                 values: new object[] { 1, "Eladmin@gmail.com", new DateTime(2001, 4, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Josue Russo", "Admin", "Admin#123", 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Compras_CursoId",
-                table: "Compras",
-                column: "CursoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Compras_UsuarioId",
                 table: "Compras",
                 column: "UsuarioId");
@@ -165,13 +154,13 @@ namespace ProyectoCursos.Server.Migrations
                 name: "Compras");
 
             migrationBuilder.DropTable(
+                name: "Cursos");
+
+            migrationBuilder.DropTable(
                 name: "Niveles");
 
             migrationBuilder.DropTable(
                 name: "Roles");
-
-            migrationBuilder.DropTable(
-                name: "Cursos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
