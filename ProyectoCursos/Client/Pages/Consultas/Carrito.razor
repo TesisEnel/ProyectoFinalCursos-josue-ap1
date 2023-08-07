@@ -1,5 +1,4 @@
 ﻿@page "/CarritoCompra"
-
 @using ProyectoCursos.Client.Sesion;
 @using System.Text.Json;
 @inject IJSRuntime jsRuntime
@@ -81,8 +80,19 @@
 
         foreach (var carrito in usuarioAutenticadoService.Usuario.Compras)
         {
-            var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{carrito.CursoId}");
-            carritoItems.Add(buscar);
+            try
+            {
+                var buscar = await httpClient.GetFromJsonAsync<Cursos>($"api/Cursos/{carrito.CursoId}");
+                if (buscar != null)
+                {
+                    carritoItems.Add(buscar);
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine($"Error al cargar el curso con ID {carrito.CursoId}: {ex.Message}");
+            }
         }
     }
 
@@ -92,14 +102,30 @@
 
         if (cursoAEliminar != null)
         {
-            usuarioAutenticadoService.RemoverCursoDelCarrito(cursoAEliminar);
-            await CargarCarrito();
+            try
+            {
+                usuarioAutenticadoService.RemoverCursoDelCarrito(cursoAEliminar);
 
-            notificationService.ShowNotification(
-                titulo: "Curso eliminado",
-                mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
-                NotificationSeverity.Success
-            );
+                var response = await httpClient.DeleteAsync($"api/Cursos/{cursoId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    await CargarCarrito();
+
+                    notificationService.ShowNotification(
+                        titulo: "Curso eliminado",
+                        mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
+                        NotificationSeverity.Success
+                    );
+                }
+                else
+                {
+                    Console.WriteLine($"Error al eliminar el curso con ID {cursoId}: {response.ReasonPhrase}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el curso con ID {cursoId}: {ex.Message}");
+            }
         }
     }
 }

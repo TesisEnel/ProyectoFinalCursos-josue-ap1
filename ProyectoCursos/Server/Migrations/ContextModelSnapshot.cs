@@ -56,6 +56,8 @@ namespace ProyectoCursos.Server.Migrations
 
                     b.HasKey("CompraId");
 
+                    b.HasIndex("CursoId");
+
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("Compras");
@@ -209,11 +211,19 @@ namespace ProyectoCursos.Server.Migrations
 
             modelBuilder.Entity("ProyectoCursos.Shared.Compras", b =>
                 {
+                    b.HasOne("ProyectoCursos.Shared.Cursos", "Curso")
+                        .WithMany()
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ProyectoCursos.Shared.Usuarios", null)
                         .WithMany("Compras")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Curso");
                 });
 
             modelBuilder.Entity("ProyectoCursos.Shared.Usuarios", b =>

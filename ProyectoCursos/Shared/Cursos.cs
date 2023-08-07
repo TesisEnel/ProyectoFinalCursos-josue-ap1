@@ -36,9 +36,13 @@ namespace ProyectoCursos.Shared
         public int Categorias { get; set; }
 
         [Required(ErrorMessage = "* El campo Precio es obligatorio")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "* El campo Precio debe ser mayor a 0")]
+        [Range(0.01, 1000, ErrorMessage = "* El campo Precio debe estar entre 0.01 y 1000")]
         public double Precio { get; set; }
 
+        public bool FechaBajaValida()
+        {
+            return FechaBaja > FechaAlta;
+        }
 
     }
 }

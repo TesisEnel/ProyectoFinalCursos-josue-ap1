@@ -37,7 +37,7 @@
 
                 @*Descripcion*@
                 <div class="mb-3">
-                    <label class="form-label " for="Descripcion"><i class="oi oi-book" /> Descripcion:</label>
+                    <label class="form-label " for="Descripcion"><i class="oi oi-book" /> Descripci&oacute;n:</label>
                     <InputTextArea @bind-Value="Cursos.Descripcion" class="form-control " placeholder="Describa las caractisticas del curso" />
                     <ValidationMessage For="@(() => Cursos.Descripcion)" />
                 </div>
@@ -78,7 +78,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">
-                        Categorias:
+                        Categor&iacute;a:
                         <InputSelect @bind-Value="Cursos.Categorias" class="dropdown-toggle">
                             <option value="0" disabled>Seleccione un nivel</option>
                             @foreach (var categoria in Categorias)
@@ -207,6 +207,26 @@
                 notificationService.ShowNotification(
                     titulo: "Error",
                     mensaje: "Debe seleccionar una categoría antes de guardar.",
+                    NotificationSeverity.Error
+                );
+                return;
+            }
+
+            if (!Cursos.FechaBajaValida())
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "La Fecha Baja debe ser posterior a la Fecha Alta.",
+                    NotificationSeverity.Error
+                );
+                return;
+            }
+
+            if (Cursos.Precio <= 0.01 || Cursos.Precio > 1000)
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error",
+                    mensaje: "El Precio debe estar entre 0.01 y 1000.",
                     NotificationSeverity.Error
                 );
                 return;
