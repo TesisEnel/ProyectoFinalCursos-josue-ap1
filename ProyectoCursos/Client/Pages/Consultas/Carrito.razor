@@ -45,6 +45,7 @@
                 {
                     <div class="text-right mt-4">
                         <h4>Precio Total: $@calcularPrecioTotal(carritoItems).ToString("0.00")</h4>
+                        <button class="btn btn-primary" @onclick="ComprarTodo">Comprar Todo</button>
                     </div>
                 }
             </tbody>
@@ -80,7 +81,7 @@
 
             notificationService.ShowNotification(
                  titulo: "Error",
-                 mensaje: "Registro no existe porfavor haga logout: " ,
+                 mensaje: "Registro no existe, por favor haga logout: ",
                  NotificationSeverity.Error
              );
         }
@@ -102,7 +103,6 @@
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine($"Error al cargar el curso con ID {carrito.CursoId}: {ex.Message}");
             }
         }
@@ -122,6 +122,55 @@
                 mensaje: $"{cursoAEliminar.NombreCurso} ha sido eliminado del carrito.",
                 NotificationSeverity.Success
             );
+        }
+    }
+
+    private async Task ComprarTodo()
+    {
+        // Crear una copia de la lista de carritoItems
+        var carritoItemsCopia = new List<Cursos>(carritoItems);
+
+        foreach (var compra in carritoItemsCopia)
+        {
+            await ComprarCurso(compra.CursoId);
+        }
+    }
+
+    private async Task ComprarCurso(int cursoId)
+    {
+        try
+        {
+            var compra = new Compras
+                {
+                    UsuarioId = usuarioAutenticadoService.Usuario.UsuarioId,
+                    CursoId = cursoId,
+                    Fecha = DateTime.Now
+                };
+
+            var response = await httpClient.PostAsJsonAsync("api/Compras", compra);
+
+            if (response.IsSuccessStatusCode)
+            {
+                EliminarDelCarrito(cursoId);
+
+                notificationService.ShowNotification(
+                    titulo: "Compra exitosa",
+                    mensaje: "Compra realizada con éxito.",
+                    NotificationSeverity.Success
+                );
+            }
+            else
+            {
+                notificationService.ShowNotification(
+                    titulo: "Error en la compra",
+                    mensaje: "Hubo un error al realizar la compra.",
+                    NotificationSeverity.Error
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al comprar el curso con ID {cursoId}: {ex.Message}");
         }
     }
 }
